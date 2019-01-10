@@ -19,6 +19,20 @@ export default gql`
     me: User
   }
 
+  type Mutation {
+    # if false, send message failed -- check errors
+    sendMessage(chat: ID!, content: String!): MessageUpdateResponse!
+    # if false, read receipt failed -- check errors
+    readMessages(chat: ID!, messages: [ID]!): MessageUpdateResponse!
+    login(name: String): String # login token
+  }
+
+  type MessageUpdateResponse {
+    success: Boolean!
+    status: String
+    messages: [Message]
+  }
+
   """
   Simple wrapper around our list of chats that contains a cursor to the last
   item in the list. Pass this cursor to the chats query to fetch the results
@@ -66,10 +80,8 @@ export default gql`
   type Message {
     id: ID!
     content: String!
-    read: Boolean!
+    read: [ID]! # IDs of everyone who has read the message
     # TODO: Decide how to handle date+time
     sent: String!
-    # TODO: Decide how to handle date+time
-    received: String
   }
 `;
