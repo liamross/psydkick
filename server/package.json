@@ -1,0 +1,12 @@
+{
+  "name": "psydkick-server",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "apollo-server": "^2.3.1",
+    "graphql": "^14.0.2"
+  },
+  "devDependencies": {
+    "tslint": "^5.12.0"
+  }
+}
