@@ -11,7 +11,7 @@
     "module": "commonjs",
     "moduleResolution": "node",
     "noUnusedLocals": false,
-    "outDir": "lib",
+    "outDir": "build",
     "preserveConstEnums": true,
     "removeComments": true,
     "resolveJsonModule": true,

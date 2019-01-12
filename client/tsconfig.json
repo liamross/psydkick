@@ -12,7 +12,6 @@
     "moduleResolution": "node",
     "noEmit": true,
     "noUnusedLocals": false,
-    "outDir": "lib",
     "preserveConstEnums": true,
     "removeComments": true,
     "resolveJsonModule": true,
