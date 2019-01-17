@@ -1,8 +1,7 @@
-import { gql } from 'apollo-server';
+import {gql} from 'apollo-server';
 
 export default gql`
   type Query {
-    # Returns a page of chats
     chats(
       """
       The number of results to show. Must be >= 1. Default = 20
@@ -13,17 +12,16 @@ export default gql`
       """
       after: String
     ): ChatConnection!
-    # Returns a specific chat
     chat(id: ID!): Chat
-    # Queries for the current user
     me: User
   }
 
   type Mutation {
-    # if false, send message failed -- check errors
-    sendMessage(chat: ID!, content: String!): MessageUpdateResponse!
-    # if false, read receipt failed -- check errors
-    readMessages(chat: ID!, messages: [ID]!): MessageUpdateResponse!
+    sendMessage(
+      chatId: ID!
+      senderId: ID!
+      content: String!
+    ): MessageUpdateResponse!
     login(name: String): String # login token
   }
 
@@ -46,7 +44,7 @@ export default gql`
 
   type Chat {
     id: ID!
-    others: [User]!
+    members: [User]!
     messages(
       """
       The number of results to show. Must be >= 1. Default = 20
@@ -57,7 +55,6 @@ export default gql`
       """
       after: String
     ): MessageConnection
-    # Returns a specific message
     message(id: ID!): Message
   }
 
@@ -81,7 +78,6 @@ export default gql`
     id: ID!
     content: String!
     read: [ID]! # IDs of everyone who has read the message
-    # TODO: Decide how to handle date+time
-    sent: String!
+    sent: String! # TODO: Decide how to handle date+time
   }
 `;

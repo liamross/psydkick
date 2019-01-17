@@ -2,3 +2,4 @@ proseWrap: always
 singleQuote: true
 trailingComma: all
 jsxBracketSameLine: true
+bracketSpacing: false

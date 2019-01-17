@@ -4,15 +4,22 @@
   "private": true,
   "scripts": {
     "test": "jest",
-    "start": "rm -rf build && tsc && node build/index.js",
-    "build": "tsc"
+    "start": "nodemon build/index.js",
+    "watch": "rm -rf build && tsc --watch",
+    "build": "rm -rf build && tsc"
   },
   "dependencies": {
     "apollo-server": "^2.3.1",
-    "graphql": "^14.0.2"
+    "graphql": "^14.0.2",
+    "reflect-metadata": "^0.1.13",
+    "sqlite3": "^4.0.6",
+    "typeorm": "^0.2.11"
   },
   "devDependencies": {
+    "@types/node": "^10.12.18",
     "jest": "^23.6.0",
-    "tslint": "^5.12.0"
+    "nodemon": "^1.18.9",
+    "tslint": "^5.12.0",
+    "typescript": "^3.2.2"
   }
 }
