@@ -7,8 +7,8 @@
     "start": "nodemon build/index.js",
     "watch": "rm -rf build && tsc --watch",
     "build": "rm -rf build && tsc",
-    "predefs": "apollo service:download --endpoint=http://localhost:4000/graphql",
-    "defs": "apollo codegen:generate src/types/api.d.ts --target typescript --outputFlat"
+    "precodegen": "apollo service:download --endpoint=http://localhost:4000/graphql",
+    "codegen": "apollo codegen:generate src/types/api.d.ts --target typescript --outputFlat"
   },
   "dependencies": {
     "apollo-server": "^2.3.1",

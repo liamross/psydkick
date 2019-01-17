@@ -6,11 +6,11 @@ import {Message} from './models/message';
 export const connectDatabase = async () => {
   const connectionOptions: ConnectionOptions = {
     type: 'sqlite',
+    database: './store.sqlite',
     host: 'localhost',
     port: 3306,
-    username: 'username',
-    password: 'password',
-    database: 'test',
+    username: 'username', // TODO: update
+    password: 'password', // TODO: update
     entities: [User, Chat, Message],
     synchronize: true,
     logging: false,

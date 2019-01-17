@@ -7,31 +7,22 @@ import UserAPI from './data/user';
 
 import 'reflect-metadata';
 
-// Creates a database connection once, NOT for every request.
-// connectDatabase().then(connection => {
-//   // Set up any dataSources our resolvers need.
-//   const dataSources = () => ({
-//     userAPI: new UserAPI(connection),
-//   });
+(async () => {
+  const connection = await connectDatabase();
 
-//   const server = new ApolloServer({
-//     typeDefs,
-//     dataSources,
-//   });
+  // Set up any dataSources our resolvers need.
+  const dataSources = () => ({
+    userAPI: new UserAPI({connection}),
+  });
 
-//   // Start our server if we're not in a test env.
-//   if (process.env.NODE_ENV !== 'test')
-//     server
-//       .listen({port: 4000})
-//       .then(({url}) => console.log(`🚀 app running at ${url}`));
-// });
+  const server = new ApolloServer({
+    typeDefs,
+    dataSources,
+  });
 
-const server = new ApolloServer({
-  typeDefs,
-});
-
-// Start our server if we're not in a test env.
-if (process.env.NODE_ENV !== 'test')
-  server
-    .listen({port: 4000})
-    .then(({url}) => console.log(`🚀 app running at ${url}`));
+  // Start our server if we're not in a test env.
+  if (process.env.NODE_ENV !== 'test') {
+    const serverInfo = await server.listen({port: 4000});
+    console.log(`🚀 app running at ${serverInfo.url}`);
+  }
+})();

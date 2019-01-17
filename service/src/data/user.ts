@@ -6,11 +6,17 @@ interface IContext {
   user: any;
 }
 
+interface ISendMessage {
+  chatId: number;
+  senderId: number;
+  content: string;
+}
+
 export default class UserAPI extends DataSource<IContext> {
   private connection: Connection;
   private context: IContext | null;
 
-  constructor(connection: Connection) {
+  constructor({connection}: {connection: Connection}) {
     super();
     this.connection = connection;
     this.context = null;
@@ -26,15 +32,7 @@ export default class UserAPI extends DataSource<IContext> {
     this.context = config.context;
   }
 
-  async sendMessage({
-    chatId,
-    senderId,
-    content,
-  }: {
-    chatId: number;
-    senderId: number;
-    content: string;
-  }) {
+  async sendMessage({chatId, senderId, content}: ISendMessage) {
     let message = new Message();
     message.chatId = chatId;
     message.senderId = senderId;
