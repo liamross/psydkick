@@ -15,8 +15,6 @@ export const connectDatabase = async () => {
     synchronize: true,
     logging: false,
   };
-
   const connection = await createConnection(connectionOptions);
-
   return connection;
 };
