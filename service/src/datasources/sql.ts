@@ -74,7 +74,8 @@ export default class UserAPI extends DataSource<IContext> {
 
   async getChatById({id}: IGetChatByIdInput) {
     const chatRepo = this.connection.getRepository(Chat);
-    return chatRepo.findOneOrFail({where: {id}});
+    const chatOrUndefined = await chatRepo.findOne({where: {id}});
+    return chatOrUndefined || null; // Convert undefined to null.
   }
 
   async sendMessage({chatId, senderId, content}: ISendMessageInput) {
@@ -82,7 +83,6 @@ export default class UserAPI extends DataSource<IContext> {
     message.chatId = chatId;
     message.senderId = senderId;
     message.content = content;
-
     const messageRepo = this.connection.getRepository(Message);
     return messageRepo.save(message);
   }
