@@ -1,15 +1,12 @@
 import {DataSource, DataSourceConfig} from 'apollo-datasource';
 import {Connection} from 'typeorm';
+
+import {User} from '../models/user';
+import {Chat} from '../models/chat';
 import {Message} from '../models/message';
 
 interface IContext {
   user: any;
-}
-
-interface ISendMessage {
-  chatId: number;
-  senderId: number;
-  content: string;
 }
 
 export default class UserAPI extends DataSource<IContext> {
@@ -32,16 +29,44 @@ export default class UserAPI extends DataSource<IContext> {
     this.context = config.context;
   }
 
-  async sendMessage({chatId, senderId, content}: ISendMessage) {
-    let message = new Message();
+  async findOrCreateUser({name}: {name?: string} = {}) {
+    if (!name) return null;
+    const userRepo = this.connection.getRepository(User);
+    // Check for existing user.
+    const existingUser = await userRepo.findOne({where: {name}});
+    if (existingUser) return existingUser;
+    // Else create a new user.
+    const user = new User();
+    user.name = name;
+    return userRepo.save(user);
+  }
+
+  async getAllChats({pageSize, after}: {pageSize: number; after: string}) {
+    const chatRepo = this.connection.getRepository(Chat);
+    return chatRepo.find();
+  }
+
+  async getChatById({id}: {id: number}) {
+    const chatRepo = this.connection.getRepository(Chat);
+    return chatRepo.findOneOrFail({where: {id}});
+  }
+
+  async sendMessage({
+    chatId,
+    senderId,
+    content,
+  }: {
+    chatId: number;
+    senderId: number;
+    content: string;
+  }) {
+    const message = new Message();
     message.chatId = chatId;
     message.senderId = senderId;
     message.content = content;
 
     const messageRepo = this.connection.getRepository(Message);
-    message = await messageRepo.save(message);
-
-    return message;
+    return messageRepo.save(message);
   }
 }
 

@@ -1,9 +1,9 @@
-import {createConnection, ConnectionOptions} from 'typeorm';
+import {Connection, createConnection, ConnectionOptions} from 'typeorm';
 import {User} from './models/user';
 import {Chat} from './models/chat';
 import {Message} from './models/message';
 
-export const connectDatabase = async () => {
+export const connectDatabase = async (): Promise<Connection> => {
   const connectionOptions: ConnectionOptions = {
     type: 'sqlite',
     database: './store.sqlite',
@@ -15,6 +15,5 @@ export const connectDatabase = async () => {
     synchronize: true,
     logging: false,
   };
-  const connection = await createConnection(connectionOptions);
-  return connection;
+  return await createConnection(connectionOptions);
 };
