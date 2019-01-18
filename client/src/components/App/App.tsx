@@ -1,25 +1,15 @@
-import React, {useState} from 'react';
+import React, {memo} from 'react';
+import useExactDate from '../../hooks/useExactDate';
 import './App.scss';
 
 function App() {
-  const [test, setTest] = useState('');
+  const date = useExactDate();
 
   return (
     <div className="App">
-      <header className="App-header">
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer">
-          Learn React
-        </a>
-      </header>
+      <header className="App-header">{date.toString()}</header>
     </div>
   );
 }
 
-export default App;
+export default memo(App);
