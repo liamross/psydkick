@@ -27,6 +27,7 @@ export default class UserAPI extends DataSource<IContext> {
    */
   initialize(config: DataSourceConfig<IContext>): void {
     this.context = config.context;
+    console.log(this.context); // TODO: Use this
   }
 
   async findOrCreateUser({name}: {name?: string} = {}) {
@@ -42,6 +43,7 @@ export default class UserAPI extends DataSource<IContext> {
   }
 
   async getAllChats({pageSize, after}: {pageSize: number; after: string}) {
+    console.log(pageSize, after); // TODO: Use these
     const chatRepo = this.connection.getRepository(Chat);
     return chatRepo.find();
   }
