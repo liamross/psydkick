@@ -13,7 +13,7 @@ interface IContext {
 
 // BUILD QUERY
 
-const launches: IFieldResolver<ISource, IContext> = async (
+const chats: IFieldResolver<ISource, IContext> = async (
   _parent,
   {pageSize, after},
   {dataSources},
@@ -21,7 +21,7 @@ const launches: IFieldResolver<ISource, IContext> = async (
   return dataSources.sqlAPI.getAllChats({pageSize, after});
 };
 
-const launch: IFieldResolver<ISource, IContext> = async (
+const chat: IFieldResolver<ISource, IContext> = async (
   _parent,
   {id},
   {dataSources},
@@ -38,8 +38,8 @@ const me: IFieldResolver<ISource, IContext> = async (
 };
 
 const Query: IResolverObject<ISource, IContext> = {
-  launches,
-  launch,
+  chats,
+  chat,
   me,
 };
 
