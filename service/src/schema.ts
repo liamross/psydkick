@@ -58,6 +58,8 @@ export default gql`
 
   type Chat {
     id: ID!
+    createdAt: String!
+    updatedAt: String!
     clientId: ID!
     therapistId: ID!
     messages(
@@ -86,6 +88,8 @@ export default gql`
 
   type Message {
     id: ID!
+    createdAt: String!
+    updatedAt: String!
     content: String!
     senderId: ID!
     chatId: ID!
