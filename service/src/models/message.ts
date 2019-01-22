@@ -9,20 +9,20 @@ import {
 @Entity()
 export class Message {
   @PrimaryGeneratedColumn()
-  id!: number;
+  public id!: number;
 
   @CreateDateColumn()
-  createdAt!: Date;
+  public createdAt!: Date;
 
   @UpdateDateColumn()
-  updatedAt!: Date;
+  public updatedAt!: Date;
 
   @Column()
-  content!: string;
+  public content!: string;
 
   @Column()
-  senderId!: number;
+  public senderId!: number;
 
   @Column()
-  chatId!: number;
+  public chatId!: number;
 }

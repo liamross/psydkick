@@ -9,17 +9,17 @@ import {
 @Entity()
 export class Chat {
   @PrimaryGeneratedColumn()
-  id!: number;
+  public id!: number;
 
   @CreateDateColumn()
-  createdAt!: Date;
+  public createdAt!: Date;
 
   @UpdateDateColumn()
-  updatedAt!: Date;
+  public updatedAt!: Date;
 
   @Column()
-  clientId!: number;
+  public clientId!: number;
 
   @Column()
-  therapistId!: number;
+  public therapistId!: number;
 }

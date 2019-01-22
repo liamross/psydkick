@@ -1,9 +1,9 @@
 {
-  "extends": ["tslint:recommended", "tslint-react", "tslint-config-prettier"],
+  "extends": ["tslint:recommended", "tslint-config-prettier"],
   "rules": {
     "curly": [true, "ignore-same-line"],
     "max-classes-per-file": false,
-    "no-unused-variable": [true, { "ignore-pattern": "^_" }],
+    "no-unused-variable": [true, {"ignore-pattern": "^_"}],
     "object-literal-sort-keys": false,
     "ordered-imports": false,
     "unified-signatures": false,

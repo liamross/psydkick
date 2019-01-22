@@ -2,3 +2,10 @@ proseWrap: always
 singleQuote: true
 trailingComma: all
 bracketSpacing: false
+overrides:
+  - files: '*.ts'
+    options:
+      printWidth: 120
+  - files: '*.tsx'
+    options:
+      printWidth: 120

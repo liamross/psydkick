@@ -9,14 +9,14 @@ import {
 @Entity()
 export class User {
   @PrimaryGeneratedColumn()
-  id!: number;
+  public id!: number;
 
   @CreateDateColumn()
-  createdAt!: Date;
+  public createdAt!: Date;
 
   @UpdateDateColumn()
-  updatedAt!: Date;
+  public updatedAt!: Date;
 
   @Column()
-  name!: string;
+  public name!: string;
 }

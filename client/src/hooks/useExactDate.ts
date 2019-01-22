@@ -10,7 +10,7 @@ export default function useExactDate() {
   const [date, setDate] = useState<Date>(new Date());
 
   useEffect(() => {
-    let intervalId: NodeJS.Timeout | undefined = undefined;
+    let intervalId: NodeJS.Timeout | undefined;
     const mountDate = new Date();
     // Set initial date in order to avoid skipping a second.
     setDate(mountDate);
@@ -23,7 +23,7 @@ export default function useExactDate() {
     }, 1000 - mountDate.getMilliseconds());
     // Clear interval on unmount.
     return () => {
-      clearInterval(intervalId as NodeJS.Timeout);
+      if (intervalId !== undefined) clearInterval(intervalId);
     };
   }, []);
 

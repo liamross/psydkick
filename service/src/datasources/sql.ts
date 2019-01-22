@@ -48,13 +48,13 @@ export default class UserAPI extends DataSource<IContext> {
    * here, so we can know about the user making requests. Additionally, we will
    * assign this.cache to the request cache in order to access cached values.
    */
-  initialize(config: DataSourceConfig<IContext>): void {
+  public initialize(config: DataSourceConfig<IContext>): void {
     this.context = config.context;
     this.cache = config.cache;
     console.log(this.context, this.cache); // TODO: Use this
   }
 
-  async findOrCreateUser({name}: IFindOrCreateUserInput = {}) {
+  public async findOrCreateUser({name}: IFindOrCreateUserInput = {}) {
     if (!name) return null;
     const userRepo = this.connection.getRepository(User);
     // Check for existing user.
@@ -66,19 +66,19 @@ export default class UserAPI extends DataSource<IContext> {
     return userRepo.save(user);
   }
 
-  async getAllChats({pageSize, after}: IGetAllChatsInput) {
+  public async getAllChats({pageSize, after}: IGetAllChatsInput) {
     console.log(pageSize, after); // TODO: Use these
     const chatRepo = this.connection.getRepository(Chat);
     return chatRepo.find();
   }
 
-  async getChatById({id}: IGetChatByIdInput) {
+  public async getChatById({id}: IGetChatByIdInput) {
     const chatRepo = this.connection.getRepository(Chat);
     const chatOrUndefined = await chatRepo.findOne({where: {id}});
     return chatOrUndefined || null; // Convert undefined to null.
   }
 
-  async sendMessage({chatId, senderId, content}: ISendMessageInput) {
+  public async sendMessage({chatId, senderId, content}: ISendMessageInput) {
     const message = new Message();
     message.chatId = chatId;
     message.senderId = senderId;
