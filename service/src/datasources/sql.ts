@@ -7,26 +7,7 @@ import {Chat} from '../models/chat';
 import {Message} from '../models/message';
 
 interface IContext {
-  user: any;
-}
-
-interface IFindOrCreateUserInput {
-  name?: string;
-}
-
-interface IGetAllChatsInput {
-  pageSize: number;
-  after: string;
-}
-
-interface IGetChatByIdInput {
-  id: number;
-}
-
-interface ISendMessageInput {
-  chatId: number;
-  senderId: number;
-  content: string;
+  user: User;
 }
 
 export default class UserAPI extends DataSource<IContext> {
@@ -54,35 +35,78 @@ export default class UserAPI extends DataSource<IContext> {
     console.log(this.context, this.cache); // TODO: Use this
   }
 
-  public async findOrCreateUser({name}: IFindOrCreateUserInput = {}) {
+  public async findOrCreateUser({name: nameArg}: {name?: string} = {}) {
+    const name = this.context && this.context.user && this.context.user ? this.context.user.name : nameArg;
     if (!name) return null;
     const userRepo = this.connection.getRepository(User);
     // Check for existing user.
     const existingUser = await userRepo.findOne({where: {name}});
     if (existingUser) return existingUser;
     // Else create a new user.
-    const user = new User();
-    user.name = name;
-    return userRepo.save(user);
+    const newUser = new User();
+    newUser.name = name;
+    return userRepo.save(newUser);
   }
 
-  public async getAllChats({pageSize, after}: IGetAllChatsInput) {
-    console.log(pageSize, after); // TODO: Use these
+  public async getAllChatsByUser() {
+    const userId = this.context && this.context.user && this.context.user.id;
     const chatRepo = this.connection.getRepository(Chat);
-    return chatRepo.find();
+    return chatRepo.find({where: [{clientId: userId}, {therapistId: userId}]});
   }
 
-  public async getChatById({id}: IGetChatByIdInput) {
+  public async getChatById({id}: {id: number}) {
+    const userId = this.context && this.context.user && this.context.user.id;
     const chatRepo = this.connection.getRepository(Chat);
-    const chatOrUndefined = await chatRepo.findOne({where: {id}});
+    const chatOrUndefined = await chatRepo.findOne({where: [{clientId: userId, id}, {therapistId: userId, id}]});
     return chatOrUndefined || null; // Convert undefined to null.
   }
 
-  public async sendMessage({chatId, senderId, content}: ISendMessageInput) {
+  public async getAllMessagesByChat({chatId}: {chatId: number}) {
+    // If no chat exists for this user, return early.
+    const chat = await this.getChatById({id: chatId});
+    if (!chat) return [];
+    const messageRepo = this.connection.getRepository(Message);
+    return messageRepo.find({where: {chatId}});
+  }
+
+  public async getMessageById({chatId, id}: {chatId: number; id: number}) {
+    // If no chat exists for this user, return early.
+    const chat = await this.getChatById({id: chatId});
+    if (!chat) return null;
+    const messageRepo = this.connection.getRepository(Message);
+    const chatOrUndefined = await messageRepo.findOne({where: {chatId, id}});
+    return chatOrUndefined || null; // Convert undefined to null.
+  }
+
+  public async sendMessage({
+    chatId,
+    recipientId,
+    senderId,
+    content,
+  }: {
+    chatId?: number;
+    recipientId?: number;
+    senderId: number;
+    content: string;
+  }) {
+    // If no userId return early.
+    const userId = this.context && this.context.user && this.context.user.id;
+    if (!userId) throw new Error('Not signed in');
+    if (!chatId && !recipientId) throw new TypeError('Must provide one of chatId or recipientId');
+    if (chatId && recipientId) throw new TypeError('Can not provide both chatId and recipientId');
     const message = new Message();
-    message.chatId = chatId;
     message.senderId = senderId;
     message.content = content;
+    if (chatId) message.chatId = chatId;
+    if (recipientId) {
+      const chatRepo = this.connection.getRepository(Chat);
+      const chat = new Chat();
+      // Therapist is sending the initial message.
+      chat.therapistId = senderId;
+      chat.clientId = recipientId;
+      const newChat = await chatRepo.save(chat);
+      message.chatId = newChat.id;
+    }
     const messageRepo = this.connection.getRepository(Message);
     return messageRepo.save(message);
   }

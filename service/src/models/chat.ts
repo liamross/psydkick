@@ -1,15 +1,12 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  CreateDateColumn,
-  UpdateDateColumn,
-  Column,
-} from 'typeorm';
+import {Entity, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, Column} from 'typeorm';
 
 @Entity()
 export class Chat {
   @PrimaryGeneratedColumn()
   public id!: number;
+
+  @CreateDateColumn()
+  public cursor!: string;
 
   @CreateDateColumn()
   public createdAt!: Date;

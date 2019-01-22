@@ -9,7 +9,7 @@
     "build": "rm -rf build && tsc",
     "precodegen": "apollo service:download --endpoint=http://localhost:4000/graphql",
     "codegen": "apollo codegen:generate src/types/api.d.ts --target=typescript --outputFlat",
-    "new": "apollo schema:download --endpoint=https://api.github.com/graphql --header='Authorization: bearer ***' apollo client:codegen --target=typescript"
+    "database_wipe": "rm -rf store.sqlite"
   },
   "dependencies": {
     "apollo-server": "^2.3.1",

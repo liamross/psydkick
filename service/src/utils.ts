@@ -17,3 +17,38 @@ export const connectDatabase = async (): Promise<Connection> => {
   };
   return await createConnection(connectionOptions);
 };
+
+interface IItem {
+  cursor: string;
+  [key: string]: any;
+}
+
+interface IPaginateResultsInput {
+  after: string;
+  pageSize: number;
+  results: IItem[];
+  getCursor?: (item: IItem) => any;
+}
+
+export const paginateResults = ({after: cursor, pageSize = 20, results, getCursor}: IPaginateResultsInput) => {
+  if (pageSize < 1) return [];
+  if (!cursor) return results.slice(0, pageSize);
+
+  const cursorIndex = results.findIndex(item => {
+    // If an item has a `cursor` on it, use that, otherwise try to generate one.
+    const itemCursor = item.cursor
+      ? item.cursor
+      : getCursor
+      ? getCursor(item) // attempt to get cursor
+      : null;
+
+    // If there's still not a cursor, return false by default.
+    return itemCursor ? cursor === itemCursor : false;
+  });
+
+  return cursorIndex >= 0
+    ? cursorIndex === results.length - 1 // don't let us overflow
+      ? []
+      : results.slice(cursorIndex + 1, Math.min(results.length, cursorIndex + 1 + pageSize))
+    : results.slice(0, pageSize);
+};
