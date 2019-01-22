@@ -1,5 +1,5 @@
 {
-  "name": "psydkick-server",
+  "name": "psydkick-service",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -8,7 +8,8 @@
     "watch": "rm -rf build && tsc --watch",
     "build": "rm -rf build && tsc",
     "precodegen": "apollo service:download --endpoint=http://localhost:4000/graphql",
-    "codegen": "apollo codegen:generate src/types/api.d.ts --target typescript --outputFlat"
+    "codegen": "apollo codegen:generate src/types/api.d.ts --target=typescript --outputFlat",
+    "new": "apollo schema:download --endpoint=https://api.github.com/graphql --header='Authorization: bearer ***' apollo client:codegen --target=typescript"
   },
   "dependencies": {
     "apollo-server": "^2.3.1",

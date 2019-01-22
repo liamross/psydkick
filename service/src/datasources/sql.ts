@@ -87,5 +87,3 @@ export default class UserAPI extends DataSource<IContext> {
     return messageRepo.save(message);
   }
 }
-
-module.exports = UserAPI;

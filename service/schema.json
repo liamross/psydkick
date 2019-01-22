@@ -11,11 +11,11 @@
       {
         "kind": "OBJECT",
         "name": "Query",
-        "description": "",
+        "description": null,
         "fields": [
           {
             "name": "chats",
-            "description": "",
+            "description": null,
             "args": [
               {
                 "name": "pageSize",
@@ -52,11 +52,11 @@
           },
           {
             "name": "chat",
-            "description": "",
+            "description": null,
             "args": [
               {
                 "name": "id",
-                "description": "",
+                "description": null,
                 "type": {
                   "kind": "NON_NULL",
                   "name": null,
@@ -79,7 +79,7 @@
           },
           {
             "name": "me",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "OBJECT",
@@ -122,7 +122,7 @@
         "fields": [
           {
             "name": "cursor",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -138,7 +138,7 @@
           },
           {
             "name": "hasMore",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -154,7 +154,7 @@
           },
           {
             "name": "chats",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -191,11 +191,11 @@
       {
         "kind": "OBJECT",
         "name": "Chat",
-        "description": "",
+        "description": null,
         "fields": [
           {
             "name": "id",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -211,7 +211,7 @@
           },
           {
             "name": "members",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -231,7 +231,7 @@
           },
           {
             "name": "messages",
-            "description": "",
+            "description": null,
             "args": [
               {
                 "name": "pageSize",
@@ -264,11 +264,11 @@
           },
           {
             "name": "message",
-            "description": "",
+            "description": null,
             "args": [
               {
                 "name": "id",
-                "description": "",
+                "description": null,
                 "type": {
                   "kind": "NON_NULL",
                   "name": null,
@@ -308,11 +308,11 @@
       {
         "kind": "OBJECT",
         "name": "User",
-        "description": "",
+        "description": null,
         "fields": [
           {
             "name": "id",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -328,7 +328,7 @@
           },
           {
             "name": "name",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -355,7 +355,7 @@
         "fields": [
           {
             "name": "cursor",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -371,7 +371,7 @@
           },
           {
             "name": "hasMore",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -387,7 +387,7 @@
           },
           {
             "name": "messages",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -414,11 +414,11 @@
       {
         "kind": "OBJECT",
         "name": "Message",
-        "description": "",
+        "description": null,
         "fields": [
           {
             "name": "id",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -434,7 +434,7 @@
           },
           {
             "name": "content",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -450,7 +450,7 @@
           },
           {
             "name": "read",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -470,7 +470,7 @@
           },
           {
             "name": "sent",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -493,15 +493,15 @@
       {
         "kind": "OBJECT",
         "name": "Mutation",
-        "description": "",
+        "description": null,
         "fields": [
           {
             "name": "sendMessage",
-            "description": "",
+            "description": null,
             "args": [
               {
                 "name": "chatId",
-                "description": "",
+                "description": null,
                 "type": {
                   "kind": "NON_NULL",
                   "name": null,
@@ -515,7 +515,7 @@
               },
               {
                 "name": "senderId",
-                "description": "",
+                "description": null,
                 "type": {
                   "kind": "NON_NULL",
                   "name": null,
@@ -529,7 +529,7 @@
               },
               {
                 "name": "content",
-                "description": "",
+                "description": null,
                 "type": {
                   "kind": "NON_NULL",
                   "name": null,
@@ -556,11 +556,11 @@
           },
           {
             "name": "login",
-            "description": "",
+            "description": null,
             "args": [
               {
                 "name": "name",
-                "description": "",
+                "description": null,
                 "type": {
                   "kind": "SCALAR",
                   "name": "String",
@@ -586,11 +586,11 @@
       {
         "kind": "OBJECT",
         "name": "MessageUpdateResponse",
-        "description": "",
+        "description": null,
         "fields": [
           {
             "name": "success",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -606,7 +606,7 @@
           },
           {
             "name": "status",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -618,7 +618,7 @@
           },
           {
             "name": "messages",
-            "description": "",
+            "description": null,
             "args": [],
             "type": {
               "kind": "LIST",
@@ -1437,20 +1437,20 @@
       {
         "kind": "ENUM",
         "name": "CacheControlScope",
-        "description": "",
+        "description": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
         "enumValues": [
           {
             "name": "PUBLIC",
-            "description": "",
+            "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
             "name": "PRIVATE",
-            "description": "",
+            "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           }
@@ -1460,7 +1460,7 @@
       {
         "kind": "SCALAR",
         "name": "Upload",
-        "description": "",
+        "description": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -1471,7 +1471,7 @@
     "directives": [
       {
         "name": "cacheControl",
-        "description": "",
+        "description": null,
         "locations": [
           "FIELD_DEFINITION",
           "OBJECT",
@@ -1480,7 +1480,7 @@
         "args": [
           {
             "name": "maxAge",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "SCALAR",
               "name": "Int",
@@ -1490,7 +1490,7 @@
           },
           {
             "name": "scope",
-            "description": "",
+            "description": null,
             "type": {
               "kind": "ENUM",
               "name": "CacheControlScope",
