@@ -8,13 +8,14 @@ export default gql`
   type Mutation {
     sendMessage(
       """
-      If chatId is not given, \`recipientId\` must be given. A new chat will be
-      created for the message. This can only be done by the therapist.
+      If the \`chatId\` of an existing chat is not given, \`recipientId\`
+      **must** be provided in order to instantiate a new chat.
       """
       chatId: ID
       """
-      Recipient ID is not required unless no chatId is given, in which case
-      providing it will create a new chat between the therapist and recipient.
+      The \`recipientId\` must not be provided unless no \`chatId\` is given, in
+      which case it **must** be provided in order to instantiate a new chat
+      between the therapist (sender) and recipient.
       """
       recipientId: ID
       senderId: ID!
@@ -25,7 +26,7 @@ export default gql`
 
   type MessageUpdateResponse {
     success: Boolean!
-    status: String
+    status: String!
     message: Message
   }
 
@@ -51,9 +52,9 @@ export default gql`
   after these.
   """
   type ChatConnection {
-    cursor: String!
+    cursor: String
     hasMore: Boolean!
-    chats: [Chat]!
+    chats: [Chat!]!
   }
 
   type Chat {
@@ -71,7 +72,7 @@ export default gql`
       If you add a cursor here, it will only return results _after_ this cursor
       """
       after: String
-    ): MessageConnection
+    ): MessageConnection!
     message(id: ID!): Message
   }
 
@@ -81,9 +82,9 @@ export default gql`
   after these.
   """
   type MessageConnection {
-    cursor: String!
+    cursor: String
     hasMore: Boolean!
-    messages: [Message]!
+    messages: [Message!]!
   }
 
   type Message {

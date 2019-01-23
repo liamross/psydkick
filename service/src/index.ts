@@ -4,7 +4,7 @@ import typeDefs from './schema';
 import resolvers from './resolvers';
 import {User} from './models/user';
 import SQLAPI from './datasources/sql';
-import {connectDatabase} from './utils';
+import {connectDatabase, logger} from './utils';
 import 'reflect-metadata';
 
 (async () => {
@@ -42,6 +42,6 @@ import 'reflect-metadata';
   // Start our server if we're not in a test environment.
   if (process.env.NODE_ENV !== 'test') {
     const serverInfo = await server.listen({port: 4000});
-    console.log(`🚀 app running at ${serverInfo.url}\n`);
+    logger(`🚀 app running at ${serverInfo.url}\n`);
   }
 })();

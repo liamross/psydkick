@@ -2,6 +2,7 @@ import {Connection, createConnection, ConnectionOptions} from 'typeorm';
 import {User} from './models/user';
 import {Chat} from './models/chat';
 import {Message} from './models/message';
+import moment from 'moment';
 
 export const connectDatabase = async (): Promise<Connection> => {
   const connectionOptions: ConnectionOptions = {
@@ -51,4 +52,15 @@ export const paginateResults = ({after: cursor, pageSize = 20, results, getCurso
       ? []
       : results.slice(cursorIndex + 1, Math.min(results.length, cursorIndex + 1 + pageSize))
     : results.slice(0, pageSize);
+};
+
+export const dateObjectFromDatabase = (dateString: string) => {
+  const time = Number(dateString);
+  return new Date(time);
+};
+
+export const logger = (...args: any[]) => {
+  const date = moment();
+  const formattedDate = `[${date.format('DD/MM/YYYY-HH:mm:ss:SSS')}]`;
+  return console.log(formattedDate, ...args);
 };

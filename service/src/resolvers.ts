@@ -30,20 +30,19 @@ const sendMessage: IFieldResolver<{}, IContext> = async (
   {chatId, recipientId, senderId, content},
   {dataSources},
 ) => {
-  try {
-    const sentMessage = await dataSources.sqlAPI.sendMessage({chatId, recipientId, senderId, content});
-    return {
-      success: true,
-      status: 'Message sent',
-      message: sentMessage,
-    };
-  } catch (error) {
+  const sentMessage = await dataSources.sqlAPI.sendMessage({chatId, recipientId, senderId, content});
+  if (typeof sentMessage === 'string') {
     return {
       success: false,
-      status: error.message,
+      status: sentMessage,
       message: null,
     };
   }
+  return {
+    success: true,
+    status: 'Message sent',
+    message: sentMessage,
+  };
 };
 
 const login: IFieldResolver<{}, IContext> = async (_, {name}, {dataSources}) => {
@@ -89,7 +88,7 @@ const messages: IFieldResolver<ChatModel, IContext> = async (parentChat, {after,
   allMessages.reverse();
   const pagedMessages = paginateResults({after, pageSize, results: allMessages});
   return {
-    chats: pagedMessages,
+    messages: pagedMessages,
     cursor: pagedMessages.length ? pagedMessages[pagedMessages.length - 1].cursor : null,
     // If the cursor of the end of the paginated results is the same as the last
     // item in _all_ results, then there are no more results after this.

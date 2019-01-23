@@ -9,10 +9,10 @@ export class Chat {
   public cursor!: string;
 
   @CreateDateColumn()
-  public createdAt!: Date;
+  public createdAt!: string;
 
   @UpdateDateColumn()
-  public updatedAt!: Date;
+  public updatedAt!: string;
 
   @Column()
   public clientId!: number;
