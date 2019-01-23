@@ -1,6 +1,6 @@
 module.exports = {
   client: {
-    // name: 'psydkick-client',
+    name: 'psydkick-client',
     service: 'psydkick-1',
   },
 };
