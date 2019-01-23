@@ -1,9 +1,9 @@
 module.exports = {
   client: {
+    name: 'psydkick-client',
     service: {
       name: 'psydkick-service',
-      localSchemaFile: 'schema.json',
+      localSchemaFile: '../server/schema.graphql',
     },
-    includes: ['*.graphql'],
   },
 };
