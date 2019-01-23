@@ -33,7 +33,6 @@ export default class UserAPI extends DataSource<IContext> {
   public initialize(config: DataSourceConfig<IContext>): void {
     this.context = config.context;
     this.cache = config.cache;
-    logger(this.cache); // TODO: Use this
   }
 
   public async findOrCreateUser({name: nameArg}: {name?: string} = {}): Promise<User | null> {
