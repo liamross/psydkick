@@ -12,7 +12,8 @@
     "codegen": "apollo client:codegen src/types/api.d.ts --target=typescript --outputFlat",
     "service:push": "npx apollo service:push --endpoint=http://localhost:4000",
     "service:check": "npx apollo service:check --endpoint=http://localhost:4000",
-    "deploy": "npx now"
+    "deploy": "npx now",
+    "deploy:list": "npx now ls"
   },
   "dependencies": {
     "apollo-server": "^2.3.1",
