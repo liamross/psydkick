@@ -6,21 +6,14 @@ export const initializers = {
 };
 
 export const resolvers: Resolvers = {
-  Launch: {},
   Mutation: {},
 };
 
 export const typeDefs = gql`
   extend type Query {
     isLoggedIn: Boolean!
-    cartItems: [Launch]!
   }
 
-  extend type Launch {
-    isInCart: Boolean!
-  }
-
-  extend type Mutation {
-    addOrRemoveFromCart(id: ID!): [Launch]
-  }
+  # extend type Mutation {
+  # }
 `;

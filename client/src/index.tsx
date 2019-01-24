@@ -5,12 +5,14 @@ import {BrowserRouter} from 'react-router-dom';
 import {InMemoryCache} from 'apollo-cache-inmemory';
 import {HttpLink} from 'apollo-link-http';
 import {ApolloClient} from 'apollo-client';
-import {ApolloProvider} from 'react-apollo';
+import {ApolloProvider, Query} from 'react-apollo';
+import gql from 'graphql-tag';
 
 import {initializers, resolvers, typeDefs} from './resolvers';
 import * as serviceWorker from './serviceWorker';
+
 import App from './components/App/App';
-import Login from './components/App/App';
+import Login from './components/Login/Login';
 import './index.scss';
 
 // Initialize cache.
@@ -30,16 +32,22 @@ const client = new ApolloClient({
       'client-version': '1.0.0',
     },
   }),
-  // Alpha version of Apollo:
+  // Alpha version of Apollo allows for managing local state:
   initializers,
   resolvers,
   typeDefs,
 });
 
+const IS_LOGGED_IN = gql`
+  query IsUserLoggedIn {
+    isLoggedIn @client
+  }
+`;
+
 ReactDOM.render(
   <ApolloProvider client={client}>
     <BrowserRouter>
-      <App />
+      <Query query={IS_LOGGED_IN}>{({data}) => (data.isLoggedIn ? <App /> : <Login />)}</Query>
     </BrowserRouter>
   </ApolloProvider>,
   document.getElementById('root'),

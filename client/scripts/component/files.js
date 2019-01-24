@@ -36,11 +36,12 @@ const component = (componentName, isClass, classPrefix) =>
 import s from './${componentName}.module.scss';
 
 interface I${componentName}Props {
-  someProp: string;
+  // someProp: string;
 }
 
-const ${componentName}: React.SFC<I${componentName}Props> = ({someProp}) => {
-  return <div className={styles.something}>{'Hello World'}</div>;
+const ${componentName}: React.SFC<I${componentName}Props> = () => {
+  return <div className={s.${componentName.charAt(0).toLowerCase() +
+    componentName.slice(1)}}>{'Hello World'}</div>;
 }
 
 export default ${componentName};
