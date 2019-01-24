@@ -10,20 +10,24 @@ export default function useExactDate() {
   const [date, setDate] = useState<Date>(new Date());
 
   useEffect(() => {
-    let intervalId: NodeJS.Timeout | undefined;
-    const mountDate = new Date();
-    // Set initial date in order to avoid skipping a second.
-    setDate(mountDate);
-    // Set timeout for 1s - current ms to get remaining ms until next second.
-    setTimeout(() => {
-      // Once timeout completes, set date to change to new second.
-      setDate(new Date());
-      // Set interval to increment every subsequent second.
-      intervalId = setInterval(() => setDate(new Date()), 1000);
-    }, 1000 - mountDate.getMilliseconds());
-    // Clear interval on unmount.
+    let timeoutId: NodeJS.Timeout | undefined;
+
+    // Given the current time's milliseconds, will wait until next second, then
+    // will get time, set date, and start another timeout for the next second.
+    const updateDate = (currentMilliseconds: number) =>
+      setTimeout(() => {
+        const now = new Date();
+        setDate(now);
+        timeoutId = updateDate(now.getMilliseconds()); // Call self for next ms.
+      }, 1000 - currentMilliseconds);
+
+    // Initial set date and timeout.
+    const mountNow = new Date();
+    setDate(mountNow);
+    timeoutId = updateDate(mountNow.getMilliseconds());
+
     return () => {
-      if (intervalId !== undefined) clearInterval(intervalId);
+      if (timeoutId !== undefined) clearTimeout(timeoutId);
     };
   }, []);
 
