@@ -21,6 +21,7 @@ export default class UserAPI extends DataSource<IContext> {
     this.connection = connection;
     this.context = null;
     this.cache = null;
+    logger(JSON.stringify(this.cache));
   }
 
   /**
