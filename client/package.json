@@ -6,7 +6,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject",
+    "component": "node scripts/component/component.js -p='src/components' -s='psy-'",
+    "__eject": "react-scripts eject",
     "codegen": "apollo client:codegen --target=typescript"
   },
   "eslintConfig": {
@@ -20,18 +21,20 @@
   ],
   "dependencies": {
     "apollo-cache-inmemory": "^1.4.2",
-    "apollo-client": "^2.5.0-alpha.10",
+    "apollo-client": "alpha",
     "apollo-link-http": "^1.5.9",
     "graphql-tag": "^2.10.1",
     "react": "^16.8.0-alpha.1",
     "react-apollo": "^2.4.0",
-    "react-dom": "^16.8.0-alpha.1"
+    "react-dom": "^16.8.0-alpha.1",
+    "react-router-dom": "^4.3.1"
   },
   "devDependencies": {
     "@types/jest": "^23.3.12",
     "@types/node": "^10.12.18",
     "@types/react": "^16.7.18",
     "@types/react-dom": "^16.0.11",
+    "@types/react-router-dom": "^4.3.1",
     "apollo": "^2.3.0",
     "node-sass": "^4.11.0",
     "prettier": "^1.15.3",
