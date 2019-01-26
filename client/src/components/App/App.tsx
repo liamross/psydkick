@@ -5,13 +5,14 @@ import {Button} from '@blueprintjs/core';
 import s from './App.module.scss';
 
 const GET_CHATS = gql`
-  query AllChats {
+  query AllChats($after: String) {
     me {
-      chats(pageSize: 1) {
+      chats(pageSize: 1, after: $after) {
         cursor
         hasMore
         chats {
           id
+          createdAt
           # Add more...
         }
       }
@@ -30,8 +31,9 @@ function App() {
 
         return (
           <div>
-            {data.me.chats.chats.map(({id}: {id: string}) => (
-              <div key={id}>{`[${id}]`}</div>
+            <div>Cursor: {data.me.chats.cursor}</div>
+            {data.me.chats.chats.map(({id, createdAt}: {id: string; createdAt: string}) => (
+              <div key={id}>{`[id=${id}; createdAt=${new Date(Number(createdAt)).toString()}]`}</div>
             ))}
             {data.me.chats && data.me.chats.hasMore && (
               <Button

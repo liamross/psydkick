@@ -5,11 +5,11 @@ export class User {
   @PrimaryGeneratedColumn()
   public id!: number;
 
-  @CreateDateColumn()
-  public createdAt!: string;
+  @CreateDateColumn({type: 'datetime'})
+  public createdAt!: Date;
 
-  @UpdateDateColumn()
-  public updatedAt!: string;
+  @UpdateDateColumn({type: 'datetime'})
+  public updatedAt!: Date;
 
   @Column()
   public name!: string;

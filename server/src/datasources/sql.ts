@@ -66,6 +66,7 @@ export default class UserAPI extends DataSource<IContext> {
     const chatRepo = this.connection.getRepository(Chat);
     return chatRepo.find({
       where: [{clientId: userId}, {therapistId: userId}],
+      order: {createdAt: 'DESC'},
     });
   }
 
@@ -84,7 +85,7 @@ export default class UserAPI extends DataSource<IContext> {
     if (!chat) return [];
 
     const messageRepo = this.connection.getRepository(Message);
-    return messageRepo.find({where: {chatId}});
+    return messageRepo.find({where: {chatId}, order: {createdAt: 'DESC'}});
   }
 
   public async getMessageById({chatId, id}: {chatId: number; id: number}): Promise<Message | null> {

@@ -20,7 +20,7 @@ export const connectDatabase = async (): Promise<Connection> => {
 };
 
 interface IItem {
-  cursor: string;
+  cursor?: string;
   [key: string]: any;
 }
 
@@ -28,7 +28,7 @@ interface IPaginateResultsInput {
   after: string;
   pageSize: number;
   results: IItem[];
-  getCursor?: (item: IItem) => any;
+  getCursor?: (item: IItem) => string;
 }
 
 export const paginateResults = ({after: cursor, pageSize = 20, results, getCursor}: IPaginateResultsInput) => {
@@ -46,6 +46,8 @@ export const paginateResults = ({after: cursor, pageSize = 20, results, getCurso
     // If there's still not a cursor, return false by default.
     return itemCursor ? cursor === itemCursor : false;
   });
+
+  console.log('cursorIndex:', cursorIndex);
 
   return cursorIndex >= 0
     ? cursorIndex === results.length - 1 // don't let us overflow

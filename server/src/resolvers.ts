@@ -63,17 +63,13 @@ const Mutation: IResolverObject<{}, IContext> = {sendMessage, login, createAccou
 
 const chats: IFieldResolver<UserModel, IContext> = async (_parentUser, {after, pageSize}, {dataSources}) => {
   const allChats = await dataSources.sqlAPI.getAllChatsByUser();
-  // We want these in reverse chronological order (most recent first).
-  allChats.reverse();
-  const pagedChats = paginateResults({after, pageSize, results: allChats});
+  const pagedChats = paginateResults({after, pageSize, results: allChats, getCursor: item => item.id});
   return {
     chats: pagedChats,
-    cursor: pagedChats.length ? pagedChats[pagedChats.length - 1].cursor : null,
+    cursor: pagedChats.length ? pagedChats[pagedChats.length - 1].id : null,
     // If the cursor of the end of the paginated results is the same as the last
     // item in _all_ results, then there are no more results after this.
-    hasMore: pagedChats.length
-      ? pagedChats[pagedChats.length - 1].cursor !== allChats[allChats.length - 1].cursor
-      : false,
+    hasMore: pagedChats.length ? pagedChats[pagedChats.length - 1].id !== allChats[allChats.length - 1].id : false,
   };
 };
 
@@ -89,16 +85,14 @@ const User: IResolverObject<UserModel, IContext> = {chats, chat};
 
 const messages: IFieldResolver<ChatModel, IContext> = async (parentChat, {after, pageSize}, {dataSources}) => {
   const allMessages = await dataSources.sqlAPI.getAllMessagesByChat({chatId: parentChat.id});
-  // We want these in reverse chronological order (most recent first).
-  allMessages.reverse();
-  const pagedMessages = paginateResults({after, pageSize, results: allMessages});
+  const pagedMessages = paginateResults({after, pageSize, results: allMessages, getCursor: item => item.id});
   return {
     messages: pagedMessages,
-    cursor: pagedMessages.length ? pagedMessages[pagedMessages.length - 1].cursor : null,
+    cursor: pagedMessages.length ? pagedMessages[pagedMessages.length - 1].id : null,
     // If the cursor of the end of the paginated results is the same as the last
     // item in _all_ results, then there are no more results after this.
     hasMore: pagedMessages.length
-      ? pagedMessages[pagedMessages.length - 1].cursor !== allMessages[allMessages.length - 1].cursor
+      ? pagedMessages[pagedMessages.length - 1].id !== allMessages[allMessages.length - 1].id
       : false,
   };
 };

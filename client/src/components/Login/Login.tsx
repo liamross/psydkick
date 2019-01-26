@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, memo} from 'react';
 import gql from 'graphql-tag';
 import {History} from 'history';
 import {FormGroup, InputGroup, Button, Intent} from '@blueprintjs/core';
@@ -50,28 +50,40 @@ const Login: React.SFC<ILoginProps> = ({redirect, history}) => {
               setInvalid(true);
             }
           }}>
-          {(login, {loading, error}) => {
-            if (loading) return <p>{'Loading...'}</p>;
+          {(login, {error}) => {
             if (error) return <p>{error.message}</p>;
 
             return (
-              <div className={s.login}>
-                <FormGroup
-                  helperText={invalid ? 'Invalid username' : undefined}
-                  intent={invalid ? Intent.DANGER : undefined}
-                  label={'Username'}
-                  labelFor={'login-username'}
-                  labelInfo={'*'}>
-                  <InputGroup
-                    id={'login-username'}
-                    placeholder={'Enter your username'}
+              <div className={s.component}>
+                <div className={s.container}>
+                  <FormGroup
+                    helperText={invalid ? 'User does not exist' : undefined}
                     intent={invalid ? Intent.DANGER : undefined}
-                    value={username}
-                    autoComplete="off" // Stop autocomplete from covering helper text.
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUsername(e.target.value)}
-                  />
-                </FormGroup>
-                <Button onClick={() => login({variables: {name: username}})}>{'Sign in'}</Button>
+                    label={'Username'}
+                    labelFor={'login-username'}
+                    labelInfo={'*'}>
+                    <InputGroup
+                      id={'login-username'}
+                      placeholder={'Enter your username'}
+                      intent={invalid ? Intent.DANGER : undefined}
+                      value={username}
+                      autoComplete="off" // Stop autocomplete from covering helper text.
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUsername(e.target.value)}
+                      onKeyPress={e => {
+                        if (e.which === 13) login({variables: {name: username}});
+                      }}
+                    />
+                  </FormGroup>
+                  <div className={s.buttonFlex}>
+                    <Button
+                      disabled={!username || invalid}
+                      onClick={() => {
+                        login({variables: {name: username}});
+                      }}>
+                      {'Sign in'}
+                    </Button>
+                  </div>
+                </div>
               </div>
             );
           }}
@@ -81,4 +93,4 @@ const Login: React.SFC<ILoginProps> = ({redirect, history}) => {
   );
 };
 
-export default Login;
+export default memo(Login);

@@ -1,0 +1,22 @@
+.component {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 32px;
+}
+
+.container {
+  height: 120px;
+  width: 100%;
+  max-width: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.buttonFlex {
+  display: flex;
+  justify-content: flex-end;
+}
