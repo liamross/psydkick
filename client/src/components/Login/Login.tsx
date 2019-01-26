@@ -1,5 +1,6 @@
-import React from 'react';
+import React, {useState} from 'react';
 import gql from 'graphql-tag';
+import {FormGroup, InputGroup, Button} from '@blueprintjs/core';
 import {ApolloConsumer, Mutation} from 'react-apollo';
 
 import s from './Login.module.scss';
@@ -15,6 +16,8 @@ interface ILoginProps {
 }
 
 const Login: React.SFC<ILoginProps> = () => {
+  const [username, setUsername] = useState('');
+
   return (
     <ApolloConsumer>
       {client => (
@@ -24,11 +27,31 @@ const Login: React.SFC<ILoginProps> = () => {
             localStorage.setItem('token', login);
             client.writeData({data: {isLoggedIn: true}});
           }}>
-          {(login, {loading, error, data}) => {
+          {(login, {loading, error}) => {
             if (loading) return <p>{'Loading...'}</p>;
             if (error) return <p>{error.message}</p>;
 
-            return <button onClick={() => login({variables: {name: 'Liam'}})}>Hey</button>;
+            // login({ variables: { name: someName } })
+
+            return (
+              <div className={s.login}>
+                <FormGroup
+                  helperText={undefined} // If you need to show an error
+                  intent={undefined} // If you need to show an error
+                  label={'Username'}
+                  labelFor={'login-username'}
+                  labelInfo={'*'}>
+                  <InputGroup
+                    id={'login-username'}
+                    placeholder={'Enter your username'}
+                    intent={undefined} // If you need to show an error
+                    value={username}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUsername(e.target.value)}
+                  />
+                </FormGroup>
+                <Button onClick={() => login({variables: {name: username}})}>Login</Button>
+              </div>
+            );
           }}
         </Mutation>
       )}

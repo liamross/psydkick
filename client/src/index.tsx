@@ -13,6 +13,7 @@ import * as serviceWorker from './serviceWorker';
 
 import App from './components/App/App';
 import Login from './components/Login/Login';
+
 import './index.scss';
 
 // Initialize cache.
@@ -47,7 +48,15 @@ const IS_LOGGED_IN = gql`
 ReactDOM.render(
   <ApolloProvider client={client}>
     <BrowserRouter>
-      <Query query={IS_LOGGED_IN}>{({data}) => (data.isLoggedIn ? <App /> : <Login />)}</Query>
+      <Query query={IS_LOGGED_IN}>
+        {({loading, error, data}) => {
+          if (loading) return <p>{'Loading...'}</p>;
+          if (error) return <p>{error.message}</p>;
+
+          if (!data.isLoggedIn) return <Login />;
+          return <App />;
+        }}
+      </Query>
     </BrowserRouter>
   </ApolloProvider>,
   document.getElementById('root'),

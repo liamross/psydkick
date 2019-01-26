@@ -2,7 +2,9 @@
   "extends": ["tslint:recommended", "tslint-react", "tslint-config-prettier"],
   "rules": {
     "curly": [true, "ignore-same-line"],
+    "jsx-boolean-value": false,
     "jsx-no-lambda": false,
+    "jsx-self-close": false,
     "max-classes-per-file": false,
     "no-empty-interface": false,
     "no-unused-variable": [true, {"ignore-pattern": "^_"}],
