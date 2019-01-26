@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import gql from 'graphql-tag';
+import {History} from 'history';
 import {FormGroup, InputGroup, Button, Intent} from '@blueprintjs/core';
 import {ApolloConsumer, Mutation} from 'react-apollo';
 
@@ -17,14 +18,21 @@ const CREATE_ACCOUNT = gql`
   }
 `;
 
-interface ILoginProps {}
+interface ILoginProps {
+  redirect?: string;
+  history?: History<any>;
+}
 
-const Login: React.SFC<ILoginProps> = () => {
+const Login: React.SFC<ILoginProps> = ({redirect, history}) => {
   const [username, setUsername] = useState('');
   const [invalid, setInvalid] = useState(false);
   useEffect(() => {
     setInvalid(false);
   }, [username]);
+
+  useEffect(() => {
+    document.title = 'Sign in - Psydkick';
+  }, []);
 
   return (
     <ApolloConsumer>
@@ -35,6 +43,9 @@ const Login: React.SFC<ILoginProps> = () => {
             if (login) {
               localStorage.setItem('token', login);
               client.writeData({data: {isLoggedIn: true}});
+              if (history && redirect) {
+                history.push(redirect);
+              }
             } else {
               setInvalid(true);
             }
@@ -60,7 +71,7 @@ const Login: React.SFC<ILoginProps> = () => {
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUsername(e.target.value)}
                   />
                 </FormGroup>
-                <Button onClick={() => login({variables: {name: username}})}>Log in</Button>
+                <Button onClick={() => login({variables: {name: username}})}>{'Sign in'}</Button>
               </div>
             );
           }}

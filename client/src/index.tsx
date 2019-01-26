@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {BrowserRouter} from 'react-router-dom';
+import {BrowserRouter, Switch, Route, Redirect} from 'react-router-dom';
 
 import {InMemoryCache} from 'apollo-cache-inmemory';
 import {HttpLink} from 'apollo-link-http';
@@ -52,8 +52,36 @@ ReactDOM.render(
           if (loading) return <p>{'Loading...'}</p>;
           if (error) return <p>{error.message}</p>;
 
-          if (!data.isLoggedIn) return <Login />;
-          return <App />;
+          return (
+            <Switch>
+              <Route
+                path={`/auth`}
+                render={({location, history}) => {
+                  const {redirect} = location.state;
+                  if (!data.isLoggedIn) {
+                    return <Login redirect={redirect} history={history} />;
+                  }
+                  return <Redirect to={'/'} />;
+                }}
+              />
+              <Route
+                render={({location: {pathname}}) => {
+                  return !data.isLoggedIn ? (
+                    <Redirect
+                      to={{
+                        pathname: '/auth',
+                        state: {
+                          redirect: pathname,
+                        },
+                      }}
+                    />
+                  ) : (
+                    <App />
+                  );
+                }}
+              />
+            </Switch>
+          );
         }}
       </Query>
     </BrowserRouter>
