@@ -20,23 +20,22 @@ import './index.scss';
 const cache = new InMemoryCache();
 
 // Connect to the API.
-const link = new HttpLink({uri: 'http://localhost:4000/'});
+const link = new HttpLink({
+  uri: 'http://localhost:4000/graphql',
+  headers: {
+    authorization: localStorage.getItem('token'),
+    'client-name': 'psydkick-client',
+    'client-version': '1.0.0',
+  },
+});
 
 // Build Apollo client.
 const client = new ApolloClient({
   cache,
-  link: new HttpLink({
-    uri: 'http://localhost:4000/graphql',
-    headers: {
-      authorization: localStorage.getItem('token'),
-      'client-name': 'psydkick-client',
-      'client-version': '1.0.0',
-    },
-  }),
-  // Alpha version of Apollo allows for managing local state:
-  initializers,
-  resolvers,
-  typeDefs,
+  link,
+  initializers, // Alpha
+  resolvers, // Alpha
+  typeDefs, // Alpha
 });
 
 const IS_LOGGED_IN = gql`

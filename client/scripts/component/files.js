@@ -35,9 +35,7 @@ const component = (componentName, isClass, classPrefix) =>
 
 import s from './${componentName}.module.scss';
 
-interface I${componentName}Props {
-  // someProp: string;
-}
+interface I${componentName}Props {}
 
 const ${componentName}: React.SFC<I${componentName}Props> = () => {
   return <div className={s.${componentName.charAt(0).toLowerCase() +
