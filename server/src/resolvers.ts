@@ -16,10 +16,15 @@ interface IContext {
 // -----------------------------------------------------------------------------
 
 const me: IFieldResolver<{}, IContext> = async (_, __, {dataSources}) => {
-  return dataSources.sqlAPI.findOrCreateUser();
+  return dataSources.sqlAPI.currentUser();
 };
 
-const Query: IResolverObject<{}, IContext> = {me};
+const login: IFieldResolver<{}, IContext> = async (_, {name}, {dataSources}) => {
+  const user = await dataSources.sqlAPI.findUser({name});
+  if (user) return Buffer.from(name).toString('base64');
+};
+
+const Query: IResolverObject<{}, IContext> = {me, login};
 
 // =============================================================================
 // MUTATION RESOLVER
@@ -45,12 +50,12 @@ const sendMessage: IFieldResolver<{}, IContext> = async (
   };
 };
 
-const login: IFieldResolver<{}, IContext> = async (_, {name}, {dataSources}) => {
-  const user = await dataSources.sqlAPI.findOrCreateUser({name});
+const createAccount: IFieldResolver<{}, IContext> = async (_, {name}, {dataSources}) => {
+  const user = await dataSources.sqlAPI.createUser({name});
   if (user) return Buffer.from(name).toString('base64');
 };
 
-const Mutation: IResolverObject<{}, IContext> = {sendMessage, login};
+const Mutation: IResolverObject<{}, IContext> = {sendMessage, createAccount};
 
 // =============================================================================
 // USER RESOLVER

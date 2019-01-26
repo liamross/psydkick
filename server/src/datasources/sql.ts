@@ -36,17 +36,26 @@ export default class UserAPI extends DataSource<IContext> {
     this.cache = config.cache;
   }
 
-  public async findOrCreateUser({name: nameArg}: {name?: string} = {}): Promise<User | null> {
-    const name = this.context && this.context.user && this.context.user ? this.context.user.name : nameArg;
+  public async currentUser(): Promise<User | null> {
+    const name = this.context && this.context.user && this.context.user && this.context.user.name;
     if (!name) return null;
+    return this.findUser({name});
+  }
 
+  public async findUser({name}: {name: string}): Promise<User | null> {
     const userRepo = this.connection.getRepository(User);
 
     // Check for existing user.
     const existingUser = await userRepo.findOne({where: {name}});
-    if (existingUser) return existingUser;
+    return existingUser || null; // Convert undefined to null.
+  }
+
+  public async createUser({name}: {name: string}): Promise<User | null> {
+    const existingUser = await this.findUser({name});
+    if (existingUser) return null; // Return null: user exists.
 
     // Else create a new user.
+    const userRepo = this.connection.getRepository(User);
     const newUser = new User();
     newUser.name = name;
     return userRepo.save(newUser);
