@@ -4,6 +4,7 @@ import {BrowserRouter, Switch, Route, Redirect} from 'react-router-dom';
 
 import {InMemoryCache} from 'apollo-cache-inmemory';
 import {HttpLink} from 'apollo-link-http';
+import {setContext} from 'apollo-link-context';
 import {ApolloClient} from 'apollo-client';
 import {ApolloProvider, Query} from 'react-apollo';
 import gql from 'graphql-tag';
@@ -22,17 +23,24 @@ const cache = new InMemoryCache();
 // Connect to the API.
 const link = new HttpLink({
   uri: 'http://localhost:4000/graphql',
-  headers: {
-    authorization: localStorage.getItem('token'),
-    'client-name': 'psydkick-client',
-    'client-version': '1.0.0',
-  },
+});
+
+const authLink = setContext((_, {headers}) => {
+  // Get the authentication token from local storage if it exists.
+  const token = localStorage.getItem('token');
+  // Return the headers to the context so httpLink can read them.
+  return {
+    headers: {
+      ...headers,
+      authorization: token ? token : '',
+    },
+  };
 });
 
 // Build Apollo client.
 const client = new ApolloClient({
   cache,
-  link,
+  link: authLink.concat(link),
   initializers, // Alpha
   resolvers, // Alpha
   typeDefs, // Alpha
@@ -70,9 +78,7 @@ ReactDOM.render(
                     <Redirect
                       to={{
                         pathname: '/auth',
-                        state: {
-                          redirect: pathname,
-                        },
+                        state: {redirect: pathname},
                       }}
                     />
                   ) : (

@@ -16,7 +16,7 @@ interface IChatTileProps {
 
 const ChatTile: React.SFC<IChatTileProps> = ({chat}) => {
   return (
-    <Card interactive onClick={() => console.log('click')} className={s.component}>
+    <Card interactive onClick={undefined} className={s.component}>
       <div>Chat</div>
       <div>Client: {chat.clientId}</div>
       <div>Therapist: {chat.therapistId}</div>

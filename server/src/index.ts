@@ -21,6 +21,9 @@ import 'reflect-metadata';
     const auth = (req.headers && req.headers.authorization) || '';
     const name = Buffer.from(auth, 'base64').toString('ascii');
 
+    logger('auth', auth);
+    logger('name', name);
+
     if (name) {
       const userRepo = connection.getRepository(User);
       // Check for existing user.

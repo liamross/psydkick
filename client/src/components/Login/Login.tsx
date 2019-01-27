@@ -20,7 +20,7 @@ const CREATE_ACCOUNT = gql`
 
 interface ILoginProps {
   redirect?: string;
-  history?: History<any>;
+  history: History<any>;
 }
 
 const Login: React.SFC<ILoginProps> = ({redirect, history}) => {
@@ -43,8 +43,10 @@ const Login: React.SFC<ILoginProps> = ({redirect, history}) => {
             if (login) {
               localStorage.setItem('token', login);
               client.writeData({data: {isLoggedIn: true}});
-              if (history && redirect) {
+              if (redirect) {
                 history.push(redirect);
+              } else {
+                history.push('/');
               }
             } else {
               setInvalid(true);
