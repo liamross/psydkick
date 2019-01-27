@@ -3,17 +3,19 @@ import gql from 'graphql-tag';
 import {Query} from 'react-apollo';
 import {Button} from '@blueprintjs/core';
 import s from './App.module.scss';
+import ChatTile, {IChatTileInformation} from '../ChatTile/ChatTile';
 
 const GET_CHATS = gql`
   query AllChats($after: String) {
     me {
-      chats(pageSize: 1, after: $after) {
+      chats(pageSize: 10, after: $after) {
         cursor
         hasMore
         chats {
           id
           createdAt
-          # Add more...
+          clientId
+          therapistId
         }
       }
     }
@@ -26,14 +28,12 @@ function App() {
       {({data, loading, error, fetchMore}) => {
         if (loading) return <p>{'Loading...'}</p>;
         if (error) return <p>{error.message}</p>;
-
         if (!(data.me && data.me.chats && data.me.chats.chats)) return 'No chats.';
 
         return (
-          <div>
-            <div>Cursor: {data.me.chats.cursor}</div>
-            {data.me.chats.chats.map(({id, createdAt}: {id: string; createdAt: string}) => (
-              <div key={id}>{`[id=${id}; createdAt=${new Date(Number(createdAt)).toString()}]`}</div>
+          <div className={s.component}>
+            {data.me.chats.chats.map(({id, ...chat}: IChatTileInformation & {id: string}) => (
+              <ChatTile key={id} chat={chat} />
             ))}
             {data.me.chats && data.me.chats.hasMore && (
               <Button

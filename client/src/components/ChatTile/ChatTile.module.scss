@@ -1,0 +1,6 @@
+.component {
+  margin-bottom: 32px;
+  &:last-child {
+    margin: 0;
+  }
+}

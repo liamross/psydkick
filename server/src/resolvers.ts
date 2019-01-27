@@ -3,6 +3,7 @@ import UserAPI from './datasources/sql';
 import {paginateResults} from './utils';
 import {User as UserModel} from './models/user';
 import {Chat as ChatModel} from './models/chat';
+import {Message as MessageModel} from './models/message';
 
 // All resolvers get these arguments:
 // fieldName: (parent, args, context, info) => data
@@ -63,12 +64,19 @@ const Mutation: IResolverObject<{}, IContext> = {sendMessage, login, createAccou
 
 const chats: IFieldResolver<UserModel, IContext> = async (_parentUser, {after, pageSize}, {dataSources}) => {
   const allChats = await dataSources.sqlAPI.getAllChatsByUser();
-  const pagedChats = paginateResults({after, pageSize, results: allChats, getCursor: item => item.id});
+  const pagedChats = paginateResults<ChatModel>({
+    after,
+    pageSize,
+    results: allChats,
+    getCursor: item => item.id,
+  });
   return {
-    chats: pagedChats,
+    chats: pagedChats.map(pagedChat => ({
+      ...pagedChat,
+      createdAt: pagedChat.createdAt.toISOString(),
+      updatedAt: pagedChat.updatedAt.toISOString(),
+    })),
     cursor: pagedChats.length ? pagedChats[pagedChats.length - 1].id : null,
-    // If the cursor of the end of the paginated results is the same as the last
-    // item in _all_ results, then there are no more results after this.
     hasMore: pagedChats.length ? pagedChats[pagedChats.length - 1].id !== allChats[allChats.length - 1].id : false,
   };
 };
@@ -85,12 +93,19 @@ const User: IResolverObject<UserModel, IContext> = {chats, chat};
 
 const messages: IFieldResolver<ChatModel, IContext> = async (parentChat, {after, pageSize}, {dataSources}) => {
   const allMessages = await dataSources.sqlAPI.getAllMessagesByChat({chatId: parentChat.id});
-  const pagedMessages = paginateResults({after, pageSize, results: allMessages, getCursor: item => item.id});
+  const pagedMessages = paginateResults<MessageModel>({
+    after,
+    pageSize,
+    results: allMessages,
+    getCursor: item => item.id,
+  });
   return {
-    messages: pagedMessages,
+    messages: pagedMessages.map(pagedMessage => ({
+      ...pagedMessage,
+      createdAt: pagedMessage.createdAt.toISOString(),
+      updatedAt: pagedMessage.updatedAt.toISOString(),
+    })),
     cursor: pagedMessages.length ? pagedMessages[pagedMessages.length - 1].id : null,
-    // If the cursor of the end of the paginated results is the same as the last
-    // item in _all_ results, then there are no more results after this.
     hasMore: pagedMessages.length
       ? pagedMessages[pagedMessages.length - 1].id !== allMessages[allMessages.length - 1].id
       : false,

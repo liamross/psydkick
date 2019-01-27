@@ -1,4 +1,4 @@
-import {Entity, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, Column, Generated} from 'typeorm';
+import {Entity, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, Column} from 'typeorm';
 
 @Entity()
 export class Chat {

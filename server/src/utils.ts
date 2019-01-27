@@ -24,14 +24,19 @@ interface IItem {
   [key: string]: any;
 }
 
-interface IPaginateResultsInput {
+interface IPaginateResultsInput<T extends IItem> {
   after: string;
   pageSize: number;
-  results: IItem[];
+  results: T[];
   getCursor?: (item: IItem) => string;
 }
 
-export const paginateResults = ({after: cursor, pageSize = 20, results, getCursor}: IPaginateResultsInput) => {
+export const paginateResults = <T extends IItem>({
+  after: cursor,
+  pageSize = 20,
+  results,
+  getCursor,
+}: IPaginateResultsInput<T>): T[] => {
   if (pageSize < 1) return [];
   if (!cursor) return results.slice(0, pageSize);
 
@@ -47,18 +52,11 @@ export const paginateResults = ({after: cursor, pageSize = 20, results, getCurso
     return itemCursor ? cursor === itemCursor : false;
   });
 
-  console.log('cursorIndex:', cursorIndex);
-
   return cursorIndex >= 0
     ? cursorIndex === results.length - 1 // don't let us overflow
       ? []
       : results.slice(cursorIndex + 1, Math.min(results.length, cursorIndex + 1 + pageSize))
     : results.slice(0, pageSize);
-};
-
-export const dateObjectFromDatabase = (dateString: string) => {
-  const time = Number(dateString);
-  return new Date(time);
 };
 
 export const logger = (...args: any[]) => {
