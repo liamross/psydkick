@@ -3,6 +3,7 @@ import {gql} from 'apollo-server';
 export default gql`
   type Query {
     me: User
+    user(id: ID!): UserInformation
   }
 
   type Mutation {
@@ -29,6 +30,11 @@ export default gql`
     success: Boolean!
     status: String!
     message: Message
+  }
+
+  type UserInformation {
+    id: ID!
+    name: String!
   }
 
   type User {
