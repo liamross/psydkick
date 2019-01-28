@@ -20,8 +20,8 @@ const me: IFieldResolver<{}, IContext> = async (_, __, {dataSources}) => {
   return dataSources.sqlAPI.currentUser();
 };
 
-const userInfo: IFieldResolver<{}, IContext> = async (_, params, {dataSources}) => {
-  return dataSources.sqlAPI.findUser(params);
+const userInfo: IFieldResolver<{}, IContext> = async (_, {id, name}, {dataSources}) => {
+  return dataSources.sqlAPI.findUser({id, name});
 };
 
 const Query: IResolverObject<{}, IContext> = {me, userInfo};

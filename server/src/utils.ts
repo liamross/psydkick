@@ -61,6 +61,6 @@ export const paginateResults = <T extends IItem>({
 
 export const logger = (...args: any[]) => {
   const date = moment();
-  const formattedDate = `[${date.format('DD/MM/YYYY-HH:mm:ss:SSS')}]`;
+  const formattedDate = `[${date.format('DD/MM/YYYY-HH:mm:ss.SSS')}]`;
   return console.log(formattedDate, ...args);
 };

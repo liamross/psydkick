@@ -21,7 +21,7 @@ export default class UserAPI extends DataSource<IContext> {
     this.connection = connection;
     this.context = null;
     this.cache = null;
-    logger(JSON.stringify(this.cache));
+    logger(this.cache); // TODO: Use cache?
   }
 
   /**
@@ -42,12 +42,15 @@ export default class UserAPI extends DataSource<IContext> {
     return this.findUser({name});
   }
 
-  public async findUser(params: {id?: string; name?: string}): Promise<User | null> {
-    if (!params.id && !params.name) throw new TypeError('Must provide one of id or name');
+  public async findUser({id, name}: {id?: string; name?: string}): Promise<User | null> {
+    if (!id && !name) throw new TypeError('Must provide one of id or name');
     const userRepo = this.connection.getRepository(User);
 
     // Check for existing user.
-    const existingUser = await userRepo.findOne({where: params});
+    const findObject: {id?: string; name?: string} = {};
+    if (id) findObject.id = id;
+    if (name) findObject.name = name;
+    const existingUser = await userRepo.findOne({where: findObject});
     return existingUser || null; // Convert undefined to null.
   }
 

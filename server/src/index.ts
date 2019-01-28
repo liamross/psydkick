@@ -21,9 +21,6 @@ import 'reflect-metadata';
     const auth = (req.headers && req.headers.authorization) || '';
     const name = Buffer.from(auth, 'base64').toString('ascii');
 
-    logger('auth', auth);
-    logger('name', name);
-
     if (name) {
       const userRepo = connection.getRepository(User);
       // Check for existing user.
@@ -45,6 +42,6 @@ import 'reflect-metadata';
   // Start our server if we're not in a test environment.
   if (process.env.NODE_ENV !== 'test') {
     const serverInfo = await server.listen({port: 4000});
-    logger(`🚀 app running at ${serverInfo.url}\n`);
+    logger(`🚀 Server: ${serverInfo.url}\n`);
   }
 })();
