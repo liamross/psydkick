@@ -8,8 +8,7 @@
     "test": "react-scripts test",
     "component": "node scripts/component/component.js -p='src/components' -s='psy-'",
     "__eject": "react-scripts eject",
-    "codegen": "apollo client:codegen --target=typescript",
-    "codegen1": "apollo client:codegen src/types/api.d.ts --target=typescript --outputFlat"
+    "codegen": "apollo client:codegen types --target=typescript"
   },
   "eslintConfig": {
     "extends": "react-app"
