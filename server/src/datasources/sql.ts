@@ -42,11 +42,12 @@ export default class UserAPI extends DataSource<IContext> {
     return this.findUser({name});
   }
 
-  public async findUser({name}: {name: string}): Promise<User | null> {
+  public async findUser(params: {id?: string; name?: string}): Promise<User | null> {
+    if (!params.id && !params.name) throw new TypeError('Must provide one of id or name');
     const userRepo = this.connection.getRepository(User);
 
     // Check for existing user.
-    const existingUser = await userRepo.findOne({where: {name}});
+    const existingUser = await userRepo.findOne({where: params});
     return existingUser || null; // Convert undefined to null.
   }
 

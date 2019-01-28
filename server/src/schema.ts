@@ -3,7 +3,10 @@ import {gql} from 'apollo-server';
 export default gql`
   type Query {
     me: User
-    user(id: ID!): UserInformation
+    """
+    Must provide \`id\` and/or \`name\`.
+    """
+    userInfo(id: ID, name: String): UserInformation
   }
 
   type Mutation {

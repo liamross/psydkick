@@ -20,7 +20,11 @@ const me: IFieldResolver<{}, IContext> = async (_, __, {dataSources}) => {
   return dataSources.sqlAPI.currentUser();
 };
 
-const Query: IResolverObject<{}, IContext> = {me};
+const userInfo: IFieldResolver<{}, IContext> = async (_, params, {dataSources}) => {
+  return dataSources.sqlAPI.findUser(params);
+};
+
+const Query: IResolverObject<{}, IContext> = {me, userInfo};
 
 // =============================================================================
 // MUTATION RESOLVER
