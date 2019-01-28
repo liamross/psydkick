@@ -84,13 +84,13 @@ const Login: React.SFC<ILoginProps> = ({redirect, history}) => {
 };
 
 const LOGIN_USER = gql`
-  mutation login($name: String!) {
+  mutation Login($name: String!) {
     login(name: $name)
   }
 `;
 
 const CREATE_ACCOUNT = gql`
-  mutation login($name: String!) {
+  mutation CreateAccount($name: String!) {
     createAccount(name: $name)
   }
 `;

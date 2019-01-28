@@ -42,6 +42,6 @@ import 'reflect-metadata';
   // Start our server if we're not in a test environment.
   if (process.env.NODE_ENV !== 'test') {
     const serverInfo = await server.listen({port: 4000});
-    logger(`🚀 Server: ${serverInfo.url}\n`);
+    logger(`🚀 Server: ${serverInfo.url}`);
   }
 })();
