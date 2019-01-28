@@ -5,24 +5,7 @@ import {Button} from '@blueprintjs/core';
 import s from './App.module.scss';
 import ChatTile, {IChatTileInformation} from '../ChatTile/ChatTile';
 
-const GET_CHATS = gql`
-  query AllChats($after: String) {
-    me {
-      chats(pageSize: 10, after: $after) {
-        cursor
-        hasMore
-        chats {
-          id
-          createdAt
-          clientId
-          therapistId
-        }
-      }
-    }
-  }
-`;
-
-function App() {
+const App: React.SFC<{}> = () => {
   return (
     <Query query={GET_CHATS}>
       {({data, loading, error, fetchMore}) => {
@@ -65,6 +48,23 @@ function App() {
       }}
     </Query>
   );
-}
+};
+
+const GET_CHATS = gql`
+  query AllChats($after: String) {
+    me {
+      chats(pageSize: 10, after: $after) {
+        cursor
+        hasMore
+        chats {
+          id
+          createdAt
+          clientId
+          therapistId
+        }
+      }
+    }
+  }
+`;
 
 export default memo(App);
