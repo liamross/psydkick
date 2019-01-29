@@ -34,7 +34,7 @@ const Home: React.SFC<{}> = () => {
 
         return (
           <div className={s.component}>
-            <Card interactive onClick={undefined} className={s.component}>
+            <Card interactive onClick={undefined} className={s.new}>
               <div>Create a new chat</div>
             </Card>
             {hasChats && data!.me!.chats.chats.map(({id, ...chat}) => <ChatTile key={id} chat={chat} />)}
