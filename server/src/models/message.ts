@@ -2,7 +2,7 @@ import {Entity, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, Colu
 
 @Entity()
 export class Message {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn('increment')
   public id!: number;
 
   @CreateDateColumn({type: 'datetime'})

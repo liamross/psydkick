@@ -1,66 +1,60 @@
-import {Button} from '@blueprintjs/core';
 import gql from 'graphql-tag';
-import React, {memo} from 'react';
+import React from 'react';
 import {Query} from 'react-apollo';
-import ChatTile, {IChatTileInformation} from '../ChatTile/ChatTile';
-import s from './App.module.scss';
-import {AllChats, AllChatsVariables} from './types/AllChats';
+import {Redirect, Route, RouteComponentProps, RouteProps, Switch} from 'react-router';
+import Chat from '../Chat/Chat';
+import Home from '../Home/Home';
+import Login from '../Login/Login';
+import SignUp from '../SignUp/SignUp';
+import {IsUserLoggedIn} from './types/IsUserLoggedIn';
 
-const GET_CHATS = gql`
-  query AllChats($after: String) {
-    me {
-      chats(pageSize: 1, after: $after) {
-        cursor
-        hasMore
-        chats {
-          id
-          createdAt
-          clientId
-          therapistId
-        }
-      }
-    }
+const IS_LOGGED_IN = gql`
+  query IsUserLoggedIn {
+    isLoggedIn @client
   }
 `;
 
+interface IAuthRouteProps extends RouteProps {
+  render?: (props: RouteComponentProps<any, any, {redirect?: string} | undefined>) => React.ReactNode;
+}
+
 const App: React.SFC<{}> = () => {
   return (
-    <Query<AllChats, AllChatsVariables> query={GET_CHATS}>
-      {({data, loading, error, fetchMore}) => {
-        if (loading) return <p>{'Loading...'}</p>;
+    <Query<IsUserLoggedIn> query={IS_LOGGED_IN}>
+      {({loading, error, data}) => {
         if (error) return <p>{error.message}</p>;
-        if (!(data && data.me && data.me.chats && data.me.chats.chats)) return <p>{'No chats.'}</p>;
-
-        const handleGetMore = () => {
-          fetchMore({
-            variables: {after: data.me!.chats.cursor},
-            updateQuery: (prev, {fetchMoreResult}) => {
-              if (!fetchMoreResult) return prev;
-              return {
-                ...fetchMoreResult,
-                me: {
-                  ...fetchMoreResult.me!,
-                  chats: {
-                    ...fetchMoreResult.me!.chats,
-                    chats: [...prev.me!.chats.chats, ...fetchMoreResult.me!.chats.chats],
-                  },
-                },
-              };
-            },
-          });
-        };
+        if (loading && !data) return <p>{'Loading...'}</p>;
 
         return (
-          <div className={s.component}>
-            {data.me.chats.chats.map(({id, ...chat}) => (
-              <ChatTile key={id} chat={chat} />
-            ))}
-            {data.me.chats.hasMore ? <Button onClick={handleGetMore}>Load More</Button> : null}
-          </div>
+          <Switch>
+            <Route<IAuthRouteProps>
+              path={`/signup`}
+              render={({location, history}) => {
+                const redirect = location.state && location.state.redirect;
+                if (!data!.isLoggedIn) return <SignUp redirect={redirect} history={history} />;
+                return <Redirect to={'/'} />;
+              }}
+            />
+            <Route<IAuthRouteProps>
+              path={`/login`}
+              render={({location, history}) => {
+                const redirect = location.state && location.state.redirect;
+                if (!data!.isLoggedIn) return <Login redirect={redirect} history={history} />;
+                return <Redirect to={'/'} />;
+              }}
+            />
+            <Route path={`/chat`} component={Chat} />
+            <Route
+              render={({location: {pathname}}) => {
+                if (!data!.isLoggedIn) return <Redirect to={{pathname: '/login', state: {redirect: pathname}}} />;
+                return <Home />;
+              }}
+            />
+          </Switch>
         );
       }}
     </Query>
   );
 };
 
-export default memo(App);
+export default App;

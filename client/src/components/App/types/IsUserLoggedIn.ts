@@ -5,12 +5,6 @@
 // GraphQL query operation: IsUserLoggedIn
 // ====================================================
 
-export interface IsUserLoggedIn_me {
-  __typename: "User";
-  id: string;
-}
-
 export interface IsUserLoggedIn {
-  me: IsUserLoggedIn_me | null;
   isLoggedIn: boolean;
 }

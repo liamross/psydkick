@@ -3,21 +3,21 @@ import gql from 'graphql-tag';
 import {History} from 'history';
 import React, {useEffect, useState} from 'react';
 import {ApolloConsumer, Mutation} from 'react-apollo';
-import s from './Login.module.scss';
-import {LoginAccount, LoginAccountVariables} from './types/LoginAccount';
+import s from './SignUp.module.scss';
+import {CreateAccount, CreateAccountVariables} from './types/CreateAccount';
 
-const LOGIN_ACCOUNT = gql`
-  mutation LoginAccount($name: String!) {
-    login(name: $name)
+const CREATE_ACCOUNT = gql`
+  mutation CreateAccount($name: String!) {
+    createAccount(name: $name)
   }
 `;
 
-interface ILoginProps {
+interface ISignUpProps {
   redirect?: string;
   history: History<any>;
 }
 
-const Login: React.SFC<ILoginProps> = ({redirect, history}) => {
+const SignUp: React.SFC<ISignUpProps> = ({redirect, history}) => {
   const [username, setUsername] = useState('');
   const [invalid, setInvalid] = useState(false);
   useEffect(() => {
@@ -25,17 +25,17 @@ const Login: React.SFC<ILoginProps> = ({redirect, history}) => {
   }, [username]);
 
   useEffect(() => {
-    document.title = 'Sign in - Psydkick';
+    document.title = 'Create an account - Psydkick';
   }, []);
 
   return (
     <ApolloConsumer>
       {client => (
-        <Mutation<LoginAccount, LoginAccountVariables>
-          mutation={LOGIN_ACCOUNT}
-          onCompleted={({login}) => {
-            if (login) {
-              localStorage.setItem('token', login);
+        <Mutation<CreateAccount, CreateAccountVariables>
+          mutation={CREATE_ACCOUNT}
+          onCompleted={({createAccount}) => {
+            if (createAccount) {
+              localStorage.setItem('token', createAccount);
               client.writeData({data: {isLoggedIn: true}});
               if (redirect) {
                 history.push(redirect);
@@ -46,14 +46,14 @@ const Login: React.SFC<ILoginProps> = ({redirect, history}) => {
               setInvalid(true);
             }
           }}>
-          {(login, {error}) => {
+          {(signUp, {error}) => {
             if (error) return <p>{error.message}</p>;
 
             return (
               <div className={s.component}>
                 <div className={s.container}>
                   <FormGroup
-                    helperText={invalid ? 'User does not exist' : undefined}
+                    helperText={invalid ? 'Name already exists' : undefined}
                     intent={invalid ? Intent.DANGER : undefined}
                     label={'Username'}
                     labelFor={'login-username'}
@@ -66,16 +66,20 @@ const Login: React.SFC<ILoginProps> = ({redirect, history}) => {
                       autoComplete="off" // Stop autocomplete from covering helper text.
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUsername(e.target.value)}
                       onKeyPress={e => {
-                        if (e.which === 13) login({variables: {name: username}});
+                        if (e.which === 13) signUp({variables: {name: username}});
                       }}
                     />
                   </FormGroup>
                   <div className={s.buttonFlex}>
-                    <Button minimal onClick={() => history.replace('/signup')}>
-                      {'Create a new account'}
+                    <Button minimal onClick={() => history.replace('/login')}>
+                      {'Sign in as existing user'}
                     </Button>
-                    <Button disabled={!username || invalid} onClick={() => login({variables: {name: username}})}>
-                      {'Sign in'}
+                    <Button
+                      disabled={!username || invalid}
+                      onClick={() => {
+                        signUp({variables: {name: username}});
+                      }}>
+                      {'Create account'}
                     </Button>
                   </div>
                 </div>
@@ -88,4 +92,4 @@ const Login: React.SFC<ILoginProps> = ({redirect, history}) => {
   );
 };
 
-export default Login;
+export default SignUp;

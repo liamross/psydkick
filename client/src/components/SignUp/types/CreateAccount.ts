@@ -2,15 +2,13 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL query operation: IsUserLoggedIn
+// GraphQL mutation operation: CreateAccount
 // ====================================================
 
-export interface IsUserLoggedIn_me {
-  __typename: "User";
-  id: string;
+export interface CreateAccount {
+  createAccount: string | null;
 }
 
-export interface IsUserLoggedIn {
-  me: IsUserLoggedIn_me | null;
-  isLoggedIn: boolean;
+export interface CreateAccountVariables {
+  name: string;
 }

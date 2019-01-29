@@ -8,6 +8,7 @@
     "start": "node scripts/watch.js",
     "start:ci": "node build/index.js",
     "build": "rm -rf build && tsc",
+    "drop": "rm -rf store.sqlite",
     "service:push": "npx apollo service:push --endpoint=http://localhost:4000",
     "service:check": "npx apollo service:check --endpoint=http://localhost:4000",
     "deploy": "npx now",
