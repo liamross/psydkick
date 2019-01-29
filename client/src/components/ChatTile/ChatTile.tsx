@@ -1,8 +1,9 @@
 import React from 'react';
-import moment from 'moment';
-import {Query} from 'react-apollo';
-import {Card} from '@blueprintjs/core';
 import gql from 'graphql-tag';
+import moment from 'moment';
+import {Card} from '@blueprintjs/core';
+import {ChildDataProps, graphql} from 'react-apollo';
+import {GetUserInfo, GetUserInfoVariables} from './types/GetUserInfo';
 
 import s from './ChatTile.module.scss';
 
@@ -16,26 +17,6 @@ interface IChatTileProps {
   chat: IChatTileInformation;
 }
 
-const ChatTile: React.SFC<IChatTileProps> = ({chat}) => {
-  return (
-    <Query query={GET_USER_INFO} variables={{therapistId: chat.therapistId, clientId: chat.clientId}}>
-      {({data, loading, error}) => {
-        if (loading) return <p>{'Loading...'}</p>;
-        if (error) return <p>{error.message}</p>;
-
-        return (
-          <Card interactive onClick={undefined} className={s.component}>
-            <div>Chat</div>
-            <div>Client: {data.client ? data.client.name : 'No client found'}</div>
-            <div>Therapist: {data.therapist ? data.therapist.name : 'No therapist found'}</div>
-            <div>Created: {moment(chat.createdAt).fromNow()}</div>
-          </Card>
-        );
-      }}
-    </Query>
-  );
-};
-
 const GET_USER_INFO = gql`
   query GetUserInfo($therapistId: ID!, $clientId: ID!) {
     therapist: userInfo(id: $therapistId) {
@@ -46,5 +27,26 @@ const GET_USER_INFO = gql`
     }
   }
 `;
+
+type ChildProps = ChildDataProps<IChatTileProps, GetUserInfo, GetUserInfoVariables>;
+const withGraph = graphql<IChatTileProps, GetUserInfo, GetUserInfoVariables, ChildProps>(GET_USER_INFO, {
+  options: ({chat: {clientId, therapistId}}) => ({
+    variables: {clientId, therapistId},
+  }),
+});
+
+const ChatTile = withGraph(({chat, data: {loading, error, client, therapist}}) => {
+  if (loading) return <p>{'Loading...'}</p>;
+  if (error) return <p>{error.message}</p>;
+
+  return (
+    <Card interactive onClick={undefined} className={s.component}>
+      <div>Chat</div>
+      <div>Client: {client ? client.name : 'No client found'}</div>
+      <div>Therapist: {therapist ? therapist.name : 'No therapist found'}</div>
+      <div>Created: {moment(chat.createdAt).fromNow()}</div>
+    </Card>
+  );
+});
 
 export default ChatTile;
