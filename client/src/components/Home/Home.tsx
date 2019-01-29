@@ -1,4 +1,4 @@
-import {Button} from '@blueprintjs/core';
+import {Button, Card} from '@blueprintjs/core';
 import gql from 'graphql-tag';
 import React from 'react';
 import {Query} from 'react-apollo';
@@ -29,35 +29,38 @@ const Home: React.SFC<{}> = () => {
       {({data, loading, error, fetchMore}) => {
         if (loading) return <p>{'Loading...'}</p>;
         if (error) return <p>{error.message}</p>;
-        if (!(data && data.me && data.me.chats && data.me.chats.chats && data.me.chats.chats.length)) {
-          return <p>{'No chats.'}</p>;
-        }
 
-        const handleGetMore = () => {
-          fetchMore({
-            variables: {after: data.me!.chats.cursor},
-            updateQuery: (prev, {fetchMoreResult}) => {
-              if (!fetchMoreResult) return prev;
-              return {
-                ...fetchMoreResult,
-                me: {
-                  ...fetchMoreResult.me!,
-                  chats: {
-                    ...fetchMoreResult.me!.chats,
-                    chats: [...prev.me!.chats.chats, ...fetchMoreResult.me!.chats.chats],
-                  },
-                },
-              };
-            },
-          });
-        };
+        const hasChats: boolean = !!(data && data.me && data.me.chats.chats.length);
 
         return (
           <div className={s.component}>
-            {data.me.chats.chats.map(({id, ...chat}) => (
-              <ChatTile key={id} chat={chat} />
-            ))}
-            {data.me.chats.hasMore ? <Button onClick={handleGetMore}>Load More</Button> : null}
+            <Card interactive onClick={undefined} className={s.component}>
+              <div>Create a new chat</div>
+            </Card>
+            {hasChats && data!.me!.chats.chats.map(({id, ...chat}) => <ChatTile key={id} chat={chat} />)}
+            {hasChats && data!.me!.chats.hasMore ? (
+              <Button
+                onClick={() => {
+                  fetchMore({
+                    variables: {after: data!.me!.chats.cursor},
+                    updateQuery: (prev, {fetchMoreResult}) => {
+                      if (!fetchMoreResult) return prev;
+                      return {
+                        ...fetchMoreResult,
+                        me: {
+                          ...fetchMoreResult.me!,
+                          chats: {
+                            ...fetchMoreResult.me!.chats,
+                            chats: [...prev.me!.chats.chats, ...fetchMoreResult.me!.chats.chats],
+                          },
+                        },
+                      };
+                    },
+                  });
+                }}>
+                Load More
+              </Button>
+            ) : null}
           </div>
         );
       }}
