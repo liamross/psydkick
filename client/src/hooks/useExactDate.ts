@@ -1,4 +1,4 @@
-import {useState, useEffect} from 'react';
+import {useEffect, useState} from 'react';
 
 /**
  * Returns the date accurate to the second. This will sync up with the seconds

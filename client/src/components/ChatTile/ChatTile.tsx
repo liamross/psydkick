@@ -1,11 +1,10 @@
-import React from 'react';
+import {Card} from '@blueprintjs/core';
 import gql from 'graphql-tag';
 import moment from 'moment';
-import {Card} from '@blueprintjs/core';
+import React from 'react';
 import {ChildDataProps, graphql} from 'react-apollo';
-import {GetUserInfo, GetUserInfoVariables} from './types/GetUserInfo';
-
 import s from './ChatTile.module.scss';
+import {GetUserInfo, GetUserInfoVariables} from './types/GetUserInfo';
 
 export interface IChatTileInformation {
   createdAt: string;

@@ -1,9 +1,9 @@
-import React, {memo} from 'react';
-import gql from 'graphql-tag';
-import {Query} from 'react-apollo';
 import {Button} from '@blueprintjs/core';
-import s from './App.module.scss';
+import gql from 'graphql-tag';
+import React, {memo} from 'react';
+import {Query} from 'react-apollo';
 import ChatTile, {IChatTileInformation} from '../ChatTile/ChatTile';
+import s from './App.module.scss';
 
 const App: React.SFC<{}> = () => {
   return (

@@ -1,9 +1,8 @@
-import React, {useState, useEffect, memo} from 'react';
+import {Button, FormGroup, InputGroup, Intent} from '@blueprintjs/core';
 import gql from 'graphql-tag';
 import {History} from 'history';
-import {FormGroup, InputGroup, Button, Intent} from '@blueprintjs/core';
+import React, {memo, useEffect, useState} from 'react';
 import {ApolloConsumer, Mutation} from 'react-apollo';
-
 import s from './Login.module.scss';
 
 interface ILoginProps {
