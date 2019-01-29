@@ -1,5 +1,5 @@
-import gql from 'graphql-tag';
 import {Resolvers} from 'apollo-client';
+import gql from 'graphql-tag';
 
 export const initializers = {
   isLoggedIn: () => !!localStorage.getItem('token'),

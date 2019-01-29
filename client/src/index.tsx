@@ -1,21 +1,17 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import {BrowserRouter, Switch, Route, Redirect} from 'react-router-dom';
-
 import {InMemoryCache} from 'apollo-cache-inmemory';
-import {HttpLink} from 'apollo-link-http';
-import {setContext} from 'apollo-link-context';
 import {ApolloClient} from 'apollo-client';
-import {ApolloProvider, Query} from 'react-apollo';
+import {setContext} from 'apollo-link-context';
+import {HttpLink} from 'apollo-link-http';
 import gql from 'graphql-tag';
-
-import {initializers, resolvers, typeDefs} from './resolvers';
-import * as serviceWorker from './serviceWorker';
-
+import React from 'react';
+import {ApolloProvider, Query} from 'react-apollo';
+import ReactDOM from 'react-dom';
+import {BrowserRouter, Redirect, Route, RouteComponentProps, RouteProps, Switch} from 'react-router-dom';
 import App from './components/App/App';
 import Login from './components/Login/Login';
-
 import './index.scss';
+import {initializers, resolvers, typeDefs} from './resolvers';
+import * as serviceWorker from './serviceWorker';
 
 // Initialize cache.
 const cache = new InMemoryCache();
@@ -52,6 +48,10 @@ const IS_LOGGED_IN = gql`
   }
 `;
 
+interface IAuthRouteProps extends RouteProps {
+  render?: (props: RouteComponentProps<any, any, {redirect?: string}>) => React.ReactNode;
+}
+
 ReactDOM.render(
   <ApolloProvider client={client}>
     <BrowserRouter>
@@ -62,28 +62,18 @@ ReactDOM.render(
 
           return (
             <Switch>
-              <Route
+              <Route<IAuthRouteProps>
                 path={`/auth`}
                 render={({location, history}) => {
                   const {redirect} = location.state;
-                  if (!data.isLoggedIn) {
-                    return <Login redirect={redirect} history={history} />;
-                  }
+                  if (!data.isLoggedIn) return <Login redirect={redirect} history={history} />;
                   return <Redirect to={'/'} />;
                 }}
               />
               <Route
                 render={({location: {pathname}}) => {
-                  return !data.isLoggedIn ? (
-                    <Redirect
-                      to={{
-                        pathname: '/auth',
-                        state: {redirect: pathname},
-                      }}
-                    />
-                  ) : (
-                    <App />
-                  );
+                  if (!data.isLoggedIn) return <Redirect to={{pathname: '/auth', state: {redirect: pathname}}} />;
+                  return <App />;
                 }}
               />
             </Switch>

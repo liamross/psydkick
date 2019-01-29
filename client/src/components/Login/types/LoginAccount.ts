@@ -2,13 +2,13 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL mutation operation: CreateAccount
+// GraphQL mutation operation: LoginAccount
 // ====================================================
 
-export interface CreateAccount {
-  createAccount: string | null;
+export interface LoginAccount {
+  login: string | null;
 }
 
-export interface CreateAccountVariables {
+export interface LoginAccountVariables {
   name: string;
 }

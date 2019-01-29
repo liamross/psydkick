@@ -4,6 +4,19 @@ import {History} from 'history';
 import React, {memo, useEffect, useState} from 'react';
 import {ApolloConsumer, Mutation} from 'react-apollo';
 import s from './Login.module.scss';
+import {LoginAccount, LoginAccountVariables} from './types/LoginAccount';
+
+const LOGIN_ACCOUNT = gql`
+  mutation LoginAccount($name: String!) {
+    login(name: $name)
+  }
+`;
+
+// const CREATE_ACCOUNT = gql`
+//   mutation CreateAccount($name: String!) {
+//     createAccount(name: $name)
+//   }
+// `;
 
 interface ILoginProps {
   redirect?: string;
@@ -24,8 +37,8 @@ const Login: React.SFC<ILoginProps> = ({redirect, history}) => {
   return (
     <ApolloConsumer>
       {client => (
-        <Mutation
-          mutation={LOGIN_USER}
+        <Mutation<LoginAccount, LoginAccountVariables>
+          mutation={LOGIN_ACCOUNT}
           onCompleted={({login}) => {
             if (login) {
               localStorage.setItem('token', login);
@@ -81,17 +94,5 @@ const Login: React.SFC<ILoginProps> = ({redirect, history}) => {
     </ApolloConsumer>
   );
 };
-
-const LOGIN_USER = gql`
-  mutation Login($name: String!) {
-    login(name: $name)
-  }
-`;
-
-const CREATE_ACCOUNT = gql`
-  mutation CreateAccount($name: String!) {
-    createAccount(name: $name)
-  }
-`;
 
 export default memo(Login);
