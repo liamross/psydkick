@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import ChatInput from '../Common/ChatInput/ChatInput';
+import ChatInput from '../ChatInput/ChatInput';
 import s from './Chat.module.scss';
 
 interface IChatProps {}
@@ -13,7 +13,11 @@ const Chat: React.SFC<IChatProps> = () => {
     <div className={s.component}>
       <div className={s.messages}>{''}</div>
       <div className={s.input}>
-        <ChatInput onType={setMessage} />
+        <ChatInput
+          value={message}
+          onType={setMessage}
+          onSubmit={() => setMessage('')}
+        />
       </div>
     </div>
   );
