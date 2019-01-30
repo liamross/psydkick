@@ -1,7 +1,13 @@
 import gql from 'graphql-tag';
 import React from 'react';
 import {Query} from 'react-apollo';
-import {Redirect, Route, RouteComponentProps, RouteProps, Switch} from 'react-router';
+import {
+  Redirect,
+  Route,
+  RouteComponentProps,
+  RouteProps,
+  Switch,
+} from 'react-router';
 import Chat from '../Chat/Chat';
 import Home from '../Home/Home';
 import Login from '../Login/Login';
@@ -15,7 +21,9 @@ const IS_LOGGED_IN = gql`
 `;
 
 interface IAuthRouteProps extends RouteProps {
-  render?: (props: RouteComponentProps<any, any, {redirect?: string} | undefined>) => React.ReactNode;
+  render?: (
+    props: RouteComponentProps<any, any, {redirect?: string} | undefined>,
+  ) => React.ReactNode;
 }
 
 const App: React.SFC<{}> = () => {
@@ -31,7 +39,9 @@ const App: React.SFC<{}> = () => {
               path={`/signup`}
               render={({location, history}) => {
                 const redirect = location.state && location.state.redirect;
-                if (!data!.isLoggedIn) return <SignUp redirect={redirect} history={history} />;
+                if (!data!.isLoggedIn) {
+                  return <SignUp redirect={redirect} history={history} />;
+                }
                 return <Redirect to={'/'} />;
               }}
             />
@@ -39,15 +49,23 @@ const App: React.SFC<{}> = () => {
               path={`/login`}
               render={({location, history}) => {
                 const redirect = location.state && location.state.redirect;
-                if (!data!.isLoggedIn) return <Login redirect={redirect} history={history} />;
+                if (!data!.isLoggedIn) {
+                  return <Login redirect={redirect} history={history} />;
+                }
                 return <Redirect to={'/'} />;
               }}
             />
             <Route path={`/chat`} component={Chat} />
             <Route
-              render={({location: {pathname}}) => {
-                if (!data!.isLoggedIn) return <Redirect to={{pathname: '/login', state: {redirect: pathname}}} />;
-                return <Home />;
+              render={({history, location: {pathname}}) => {
+                if (!data!.isLoggedIn) {
+                  return (
+                    <Redirect
+                      to={{pathname: '/login', state: {redirect: pathname}}}
+                    />
+                  );
+                }
+                return <Home history={history} />;
               }}
             />
           </Switch>

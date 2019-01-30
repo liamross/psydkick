@@ -6,7 +6,7 @@
 // ====================================================
 
 export interface AllChats_me_chats_chats {
-  __typename: "Chat";
+  __typename: 'Chat';
   id: string;
   createdAt: string;
   clientId: string;
@@ -14,14 +14,14 @@ export interface AllChats_me_chats_chats {
 }
 
 export interface AllChats_me_chats {
-  __typename: "ChatConnection";
+  __typename: 'ChatConnection';
   cursor: string | null;
   hasMore: boolean;
   chats: AllChats_me_chats_chats[];
 }
 
 export interface AllChats_me {
-  __typename: "User";
+  __typename: 'User';
   chats: AllChats_me_chats;
 }
 

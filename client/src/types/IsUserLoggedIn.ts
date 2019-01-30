@@ -6,7 +6,7 @@
 // ====================================================
 
 export interface IsUserLoggedIn_me {
-  __typename: "User";
+  __typename: 'User';
   id: string;
 }
 

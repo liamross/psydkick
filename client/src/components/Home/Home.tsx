@@ -5,6 +5,7 @@ import {Query} from 'react-apollo';
 import ChatTile from '../ChatTile/ChatTile';
 import s from './Home.module.scss';
 import {AllChats, AllChatsVariables} from './types/AllChats';
+import {History} from 'history';
 
 const GET_CHATS = gql`
   query AllChats($after: String) {
@@ -23,21 +24,35 @@ const GET_CHATS = gql`
   }
 `;
 
-const Home: React.SFC<{}> = () => {
+interface IHomeProps {
+  history: History<any>;
+}
+
+const Home: React.SFC<IHomeProps> = ({history}) => {
   return (
     <Query<AllChats, AllChatsVariables> query={GET_CHATS}>
       {({data, loading, error, fetchMore}) => {
         if (loading) return <p>{'Loading...'}</p>;
         if (error) return <p>{error.message}</p>;
 
-        const hasChats: boolean = !!(data && data.me && data.me.chats.chats.length);
+        const hasChats: boolean = !!(
+          data &&
+          data.me &&
+          data.me.chats.chats.length
+        );
 
         return (
           <div className={s.component}>
-            <Card interactive onClick={undefined} className={s.new}>
+            <Card
+              interactive
+              onClick={() => history.push('/chat')}
+              className={s.new}>
               <div>Create a new chat</div>
             </Card>
-            {hasChats && data!.me!.chats.chats.map(({id, ...chat}) => <ChatTile key={id} chat={chat} />)}
+            {hasChats &&
+              data!.me!.chats.chats.map(({id, ...chat}) => (
+                <ChatTile key={id} chat={chat} />
+              ))}
             {hasChats && data!.me!.chats.hasMore ? (
               <Button
                 onClick={() => {
@@ -51,7 +66,10 @@ const Home: React.SFC<{}> = () => {
                           ...fetchMoreResult.me!,
                           chats: {
                             ...fetchMoreResult.me!.chats,
-                            chats: [...prev.me!.chats.chats, ...fetchMoreResult.me!.chats.chats],
+                            chats: [
+                              ...prev.me!.chats.chats,
+                              ...fetchMoreResult.me!.chats.chats,
+                            ],
                           },
                         },
                       };

@@ -6,12 +6,12 @@
 // ====================================================
 
 export interface GetUserInfo_therapist {
-  __typename: "UserInformation";
+  __typename: 'UserInformation';
   name: string;
 }
 
 export interface GetUserInfo_client {
-  __typename: "UserInformation";
+  __typename: 'UserInformation';
   name: string;
 }
 

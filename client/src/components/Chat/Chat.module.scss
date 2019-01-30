@@ -1,0 +1,27 @@
+@import 'src/theme/index';
+
+.component {
+  height: 100%;
+  display: grid;
+  grid-template:
+    'messages ' auto
+    'input    ' max-content
+    / 100%;
+}
+
+.messages {
+  grid-area: messages;
+  background-color: $theme-1;
+}
+
+.input {
+  grid-area: input;
+  padding: 16px;
+}
+
+.inputField {
+  height: 16px;
+  width: 100%;
+  background-color: $theme-2;
+  resize: none;
+}

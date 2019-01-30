@@ -40,8 +40,13 @@ const ChatTile: React.SFC<IChatTileProps> = ({chat}) => {
         return (
           <Card interactive onClick={undefined} className={s.component}>
             <div>Chat</div>
-            <div>Client: {data.client ? data.client.name : 'No client found'}</div>
-            <div>Therapist: {data.therapist ? data.therapist.name : 'No therapist found'}</div>
+            <div>
+              Client: {data.client ? data.client.name : 'No client found'}
+            </div>
+            <div>
+              Therapist:{' '}
+              {data.therapist ? data.therapist.name : 'No therapist found'}
+            </div>
             <div>Created: {moment(chat.createdAt).fromNow()}</div>
           </Card>
         );

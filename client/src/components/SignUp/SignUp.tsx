@@ -64,9 +64,12 @@ const SignUp: React.SFC<ISignUpProps> = ({redirect, history}) => {
                       intent={invalid ? Intent.DANGER : undefined}
                       value={username}
                       autoComplete="off" // Stop autocomplete from covering helper text.
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUsername(e.target.value)}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        setUsername(e.target.value)
+                      }
                       onKeyPress={e => {
-                        if (e.which === 13) signUp({variables: {name: username}});
+                        if (e.which === 13)
+                          signUp({variables: {name: username}});
                       }}
                     />
                   </FormGroup>

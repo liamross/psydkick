@@ -64,9 +64,12 @@ const Login: React.SFC<ILoginProps> = ({redirect, history}) => {
                       intent={invalid ? Intent.DANGER : undefined}
                       value={username}
                       autoComplete="off" // Stop autocomplete from covering helper text.
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUsername(e.target.value)}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        setUsername(e.target.value)
+                      }
                       onKeyPress={e => {
-                        if (e.which === 13) login({variables: {name: username}});
+                        if (e.which === 13)
+                          login({variables: {name: username}});
                       }}
                     />
                   </FormGroup>
@@ -74,7 +77,9 @@ const Login: React.SFC<ILoginProps> = ({redirect, history}) => {
                     <Button minimal onClick={() => history.replace('/signup')}>
                       {'Create a new account'}
                     </Button>
-                    <Button disabled={!username || invalid} onClick={() => login({variables: {name: username}})}>
+                    <Button
+                      disabled={!username || invalid}
+                      onClick={() => login({variables: {name: username}})}>
                       {'Sign in'}
                     </Button>
                   </div>
