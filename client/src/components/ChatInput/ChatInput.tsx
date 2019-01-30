@@ -1,22 +1,17 @@
-import React, {memo, useEffect} from 'react';
+import {Button} from '@blueprintjs/core';
+import React, {memo} from 'react';
 import useEventListener from '../../hooks/useEventListener';
 import s from './ChatInput.module.scss';
 
 interface IChatInputProps {
-  value: string;
   onType: (newValue: string) => any;
   onSubmit?: () => any;
 }
 
 const CHAT_ID = 'chat-input-id';
 
-const ChatInput = React.forwardRef<undefined, IChatInputProps>(
-  ({value, onType, onSubmit}, ref) => {
-    useEffect(() => {
-      const chatElement = document.getElementById(CHAT_ID);
-      if (chatElement) chatElement.innerText = value;
-    }, [value]);
-
+const ChatInput = React.forwardRef<HTMLDivElement, IChatInputProps>(
+  ({onType, onSubmit}, ref) => {
     // Listen for inputs, call onType with text content.
     const onChangeListener = () => {
       const chatElement = document.getElementById(CHAT_ID);
@@ -26,11 +21,22 @@ const ChatInput = React.forwardRef<undefined, IChatInputProps>(
 
     // Listen for `Enter` keypress without shift to fire onSubmit.
     const onKeyPressListener = (event: KeyboardEvent) => {
-      if (onSubmit && event.keyCode === 13 && !event.shiftKey) onSubmit();
+      if (onSubmit && event.keyCode === 13 && !event.shiftKey) {
+        event.preventDefault();
+        // event.stopImmediatePropagation();
+        onSubmit();
+      }
     };
     useEventListener(CHAT_ID, 'keypress', onKeyPressListener);
 
-    return <div contentEditable id={CHAT_ID} className={s.component} />;
+    return (
+      <>
+        <div className={s.component}>
+          <div ref={ref} contentEditable id={CHAT_ID} className={s.input} />
+          <Button onClick={onSubmit} minimal icon="arrow-right" />
+        </div>
+      </>
+    );
   },
 );
 
