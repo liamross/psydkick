@@ -5,7 +5,6 @@ import {Connection} from 'typeorm';
 import {User} from '../models/user';
 import {Chat} from '../models/chat';
 import {Message} from '../models/message';
-import {logger} from '../utils';
 
 interface IContext {
   user: User;
@@ -14,14 +13,11 @@ interface IContext {
 export default class UserAPI extends DataSource<IContext> {
   private connection: Connection;
   private context: IContext | null;
-  private cache: KeyValueCache | null;
 
   constructor({connection}: {connection: Connection}) {
     super();
     this.connection = connection;
     this.context = null;
-    this.cache = null;
-    logger(this.cache); // TODO: Use cache?
   }
 
   /**
@@ -33,7 +29,6 @@ export default class UserAPI extends DataSource<IContext> {
    */
   public initialize(config: DataSourceConfig<IContext>): void {
     this.context = config.context;
-    this.cache = config.cache;
   }
 
   public async currentUser(): Promise<User | null> {
