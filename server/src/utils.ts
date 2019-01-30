@@ -1,8 +1,8 @@
-import {Connection, createConnection, ConnectionOptions} from 'typeorm';
-import {User} from './models/user';
+import moment from 'moment';
+import {Connection, ConnectionOptions, createConnection} from 'typeorm';
 import {Chat} from './models/chat';
 import {Message} from './models/message';
-import moment from 'moment';
+import {User} from './models/user';
 
 export const connectDatabase = async (): Promise<Connection> => {
   const connectionOptions: ConnectionOptions = {

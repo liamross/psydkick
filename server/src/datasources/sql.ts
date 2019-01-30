@@ -1,10 +1,8 @@
 import {DataSource, DataSourceConfig} from 'apollo-datasource';
-import {KeyValueCache} from 'apollo-server-core';
 import {Connection} from 'typeorm';
-
-import {User} from '../models/user';
 import {Chat} from '../models/chat';
 import {Message} from '../models/message';
+import {User} from '../models/user';
 
 interface IContext {
   user: User;

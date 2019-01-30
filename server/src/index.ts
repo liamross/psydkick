@@ -1,11 +1,11 @@
-import {Request} from 'express';
 import {ApolloServer} from 'apollo-server';
-import typeDefs from './schema';
-import resolvers from './resolvers';
-import {User} from './models/user';
-import SQLAPI from './datasources/sql';
-import {connectDatabase, logger} from './utils';
+import {Request} from 'express';
 import 'reflect-metadata';
+import SQLAPI from './datasources/sql';
+import {User} from './models/user';
+import resolvers from './resolvers';
+import typeDefs from './schema';
+import {connectDatabase, logger} from './utils';
 
 (async () => {
   const connection = await connectDatabase();

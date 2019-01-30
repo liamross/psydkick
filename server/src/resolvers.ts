@@ -1,9 +1,9 @@
-import {IResolvers, IResolverObject, IFieldResolver} from 'graphql-tools';
+import {IFieldResolver, IResolverObject, IResolvers} from 'graphql-tools';
 import UserAPI from './datasources/sql';
-import {paginateResults} from './utils';
-import {User as UserModel} from './models/user';
 import {Chat as ChatModel} from './models/chat';
 import {Message as MessageModel} from './models/message';
+import {User as UserModel} from './models/user';
+import {paginateResults} from './utils';
 
 // All resolvers get these arguments:
 // fieldName: (parent, args, context, info) => data
