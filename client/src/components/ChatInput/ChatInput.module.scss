@@ -1,29 +1,14 @@
 .component {
   display: flex;
+  align-items: center;
+  justify-content: stretch;
 }
 
 .input {
-  flex-grow: 1;
-  margin-right: 8px;
-  overflow-y: auto;
-  max-height: 98px;
-  outline: none !important;
-  border: none !important;
-  border-radius: 3px;
-  box-shadow: 0 0 0 0 rgba(19, 124, 189, 0), 0 0 0 0 rgba(19, 124, 189, 0),
-    inset 0 0 0 1px rgba(16, 22, 26, 0.15),
-    inset 0 1px 1px rgba(16, 22, 26, 0.2);
-  background: #ffffff;
-  padding: 6px 10px 2px;
-  vertical-align: middle;
-  transition: box-shadow 100ms cubic-bezier(0.4, 1, 0.75, 0.9);
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
+  flex: 1 1 auto;
+  margin-right: 16px;
+}
 
-  &:focus,
-  .active {
-    box-shadow: 0 0 0 1px #137cbd, 0 0 0 3px rgba(19, 124, 189, 0.3),
-      inset 0 1px 1px rgba(16, 22, 26, 0.2);
-  }
+.button {
+  align-self: stretch;
 }
