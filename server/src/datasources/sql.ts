@@ -98,12 +98,10 @@ export default class UserAPI extends DataSource<IContext> {
   public async sendMessage({
     chatId,
     recipientId,
-    senderId,
     content,
   }: {
     chatId?: number;
     recipientId?: number;
-    senderId: number;
     content: string;
   }): Promise<Message | string> {
     const userId = this.context && this.context.user && this.context.user.id;
@@ -115,11 +113,11 @@ export default class UserAPI extends DataSource<IContext> {
     if (chatId && recipientId) throw new TypeError('Can not provide both chatId and recipientId');
 
     const message = new Message();
-    message.senderId = senderId;
+    message.senderId = userId;
     message.content = content;
 
     if (chatId) {
-      // If no chat exists for this user, throw.
+      // If no chat exists for this user, return string (which means error occurred).
       const chat = await this.getChatById({id: chatId});
       if (!chat) return 'Invalid chat ID';
       message.chatId = chatId;
@@ -129,7 +127,7 @@ export default class UserAPI extends DataSource<IContext> {
       const chatRepo = this.connection.getRepository(Chat);
       const chat = new Chat();
       // Therapist is sending the initial message.
-      chat.therapistId = senderId;
+      chat.therapistId = userId;
       chat.clientId = recipientId;
       const newChat = await chatRepo.save(chat);
       message.chatId = newChat.id;

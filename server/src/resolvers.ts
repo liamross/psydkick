@@ -30,12 +30,8 @@ const Query: IResolverObject<{}, IContext> = {me, userInfo};
 // MUTATION RESOLVER
 // -----------------------------------------------------------------------------
 
-const sendMessage: IFieldResolver<{}, IContext> = async (
-  _,
-  {chatId, recipientId, senderId, content},
-  {dataSources},
-) => {
-  const sentMessage = await dataSources.sqlAPI.sendMessage({chatId, recipientId, senderId, content});
+const sendMessage: IFieldResolver<{}, IContext> = async (_, {chatId, recipientId, content}, {dataSources}) => {
+  const sentMessage = await dataSources.sqlAPI.sendMessage({chatId, recipientId, content});
   if (typeof sentMessage === 'string') {
     return {
       success: false,

@@ -22,7 +22,6 @@ export default gql`
       between the therapist (sender) and recipient.
       """
       recipientId: ID
-      senderId: ID!
       content: String!
     ): MessageUpdateResponse!
     login(name: String!): String # login token
