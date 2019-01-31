@@ -30,8 +30,8 @@ const App: React.SFC<{}> = () => {
   return (
     <Query<IsUserLoggedIn> query={IS_LOGGED_IN}>
       {({loading, error, data}) => {
-        if (error) return <p>{error.message}</p>;
         if (loading && !data) return <p>{'Loading...'}</p>;
+        if (error) return <p>{error.message}</p>;
 
         return (
           <Switch>
@@ -55,7 +55,7 @@ const App: React.SFC<{}> = () => {
                 return <Redirect to={'/'} />;
               }}
             />
-            <Route path={`/chat`} component={Chat} />
+            <Route path={`/chat/:chatId?`} component={Chat} />
             <Route
               render={({history, location: {pathname}}) => {
                 if (!data!.isLoggedIn) {

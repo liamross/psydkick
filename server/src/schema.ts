@@ -23,15 +23,9 @@ export default gql`
       """
       recipientId: ID
       content: String!
-    ): MessageUpdateResponse!
+    ): Message!
     login(name: String!): String # login token
     createAccount(name: String!): String # login token
-  }
-
-  type MessageUpdateResponse {
-    success: Boolean!
-    status: String!
-    message: Message
   }
 
   type UserInformation {

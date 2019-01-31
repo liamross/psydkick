@@ -7,7 +7,6 @@
     "jsx-self-close": false,
     "max-classes-per-file": false,
     "no-empty-interface": false,
-    "no-unused-variable": [true, {"ignore-pattern": "^_"}],
     "object-literal-sort-keys": false,
     "ordered-imports": false,
     "unified-signatures": false,

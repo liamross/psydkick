@@ -46,7 +46,7 @@ const Login: React.SFC<ILoginProps> = ({redirect, history}) => {
               setInvalid(true);
             }
           }}>
-          {(login, {error}) => {
+          {(login, {loading, error}) => {
             if (error) return <p>{error.message}</p>;
 
             return (
@@ -68,8 +68,9 @@ const Login: React.SFC<ILoginProps> = ({redirect, history}) => {
                         setUsername(e.target.value)
                       }
                       onKeyPress={e => {
-                        if (e.which === 13)
+                        if (e.which === 13) {
                           login({variables: {name: username}});
+                        }
                       }}
                     />
                   </FormGroup>
@@ -78,7 +79,7 @@ const Login: React.SFC<ILoginProps> = ({redirect, history}) => {
                       {'Create a new account'}
                     </Button>
                     <Button
-                      disabled={!username || invalid}
+                      disabled={loading || !username || invalid}
                       onClick={() => login({variables: {name: username}})}>
                       {'Sign in'}
                     </Button>

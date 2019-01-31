@@ -32,18 +32,7 @@ const Query: IResolverObject<{}, IContext> = {me, userInfo};
 
 const sendMessage: IFieldResolver<{}, IContext> = async (_, {chatId, recipientId, content}, {dataSources}) => {
   const sentMessage = await dataSources.sqlAPI.sendMessage({chatId, recipientId, content});
-  if (typeof sentMessage === 'string') {
-    return {
-      success: false,
-      status: sentMessage,
-      message: null,
-    };
-  }
-  return {
-    success: true,
-    status: 'Message sent',
-    message: sentMessage,
-  };
+  return sentMessage;
 };
 
 const login: IFieldResolver<{}, IContext> = async (_, {name}, {dataSources}) => {

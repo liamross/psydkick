@@ -7,7 +7,7 @@ import s from './Home.module.scss';
 import {AllChats, AllChatsVariables} from './types/AllChats';
 import {History} from 'history';
 
-const GET_CHATS = gql`
+export const GET_CHATS = gql`
   query AllChats($after: String) {
     me {
       chats(pageSize: 1, after: $after) {

@@ -103,11 +103,11 @@ export default class UserAPI extends DataSource<IContext> {
     chatId?: number;
     recipientId?: number;
     content: string;
-  }): Promise<Message | string> {
+  }): Promise<Message> {
     const userId = this.context && this.context.user && this.context.user.id;
 
     // If no userId return string (which means error occurred).
-    if (!userId) return 'Not signed in';
+    if (!userId) throw new Error('Not signed in');
 
     if (!chatId && !recipientId) throw new TypeError('Must provide one of chatId or recipientId');
     if (chatId && recipientId) throw new TypeError('Can not provide both chatId and recipientId');
@@ -119,7 +119,7 @@ export default class UserAPI extends DataSource<IContext> {
     if (chatId) {
       // If no chat exists for this user, return string (which means error occurred).
       const chat = await this.getChatById({id: chatId});
-      if (!chat) return 'Invalid chat ID';
+      if (!chat) throw new Error('Invalid chat ID');
       message.chatId = chatId;
     }
 
