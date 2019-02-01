@@ -51,7 +51,7 @@ const Mutation: IResolverObject<{}, IContext> = {sendMessage, login, createAccou
 // USER RESOLVER
 // -----------------------------------------------------------------------------
 
-const chats: IFieldResolver<UserModel, IContext> = async (_parentUser, {after, pageSize}, {dataSources}) => {
+const chatPage: IFieldResolver<UserModel, IContext> = async (_parentUser, {after, pageSize}, {dataSources}) => {
   const allChats = await dataSources.sqlAPI.getAllChatsByUser();
   const pagedChats = paginateResults<ChatModel>({
     after,
@@ -74,13 +74,13 @@ const chat: IFieldResolver<UserModel, IContext> = async (_parentUser, {id}, {dat
   return dataSources.sqlAPI.getChatById({id});
 };
 
-const User: IResolverObject<UserModel, IContext> = {chats, chat};
+const User: IResolverObject<UserModel, IContext> = {chatPage, chat};
 
 // =============================================================================
 // CHAT RESOLVER
 // -----------------------------------------------------------------------------
 
-const messages: IFieldResolver<ChatModel, IContext> = async (parentChat, {after, pageSize}, {dataSources}) => {
+const messagePage: IFieldResolver<ChatModel, IContext> = async (parentChat, {after, pageSize}, {dataSources}) => {
   const allMessages = await dataSources.sqlAPI.getAllMessagesByChat({chatId: parentChat.id});
   const pagedMessages = paginateResults<MessageModel>({
     after,
@@ -105,7 +105,7 @@ const message: IFieldResolver<ChatModel, IContext> = async (parentChat, {id}, {d
   return dataSources.sqlAPI.getMessageById({chatId: parentChat.id, id});
 };
 
-const Chat: IResolverObject<ChatModel, IContext> = {messages, message};
+const Chat: IResolverObject<ChatModel, IContext> = {messagePage, message};
 
 // =============================================================================
 // Bundle into resolvers object.

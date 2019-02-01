@@ -60,9 +60,9 @@ const Auth: React.SFC<IAuthProps> = ({redirect, history}) => {
               localStorage.setItem('token', token);
               client.writeData({data: {isLoggedIn: true}});
               if (redirect) {
-                history.push(redirect);
+                history.replace(redirect);
               } else {
-                history.push('/');
+                history.replace('/');
               }
             } else {
               setInvalid(true);

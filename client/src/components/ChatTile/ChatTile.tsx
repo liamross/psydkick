@@ -1,11 +1,11 @@
 import {Card} from '@blueprintjs/core';
 import moment from 'moment';
 import React from 'react';
-import {AllChats_me_chats_chats} from '../Home/types/AllChats';
+import {AllChats_me_chatPage_chats} from '../Home/types/AllChats';
 import s from './ChatTile.module.scss';
 
 interface IChatTileProps {
-  chat: AllChats_me_chats_chats;
+  chat: AllChats_me_chatPage_chats;
   onClick: () => any;
 }
 

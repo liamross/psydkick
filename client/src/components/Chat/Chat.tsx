@@ -21,7 +21,7 @@ const GET_CHAT_MESSAGES = gql`
         updatedAt
         clientId
         therapistId
-        messages(pageSize: 10, after: $after) {
+        messagePage(pageSize: 10, after: $after) {
           messages {
             id
             createdAt
@@ -87,7 +87,7 @@ const Chat: React.SFC<IChatProps> = ({match}) => {
             <div className={s.component}>
               <div className={s.messages}>
                 {chat
-                  ? chat.messages.messages.reverse().map(existingMessage => (
+                  ? chat.messagePage.messages.reverse().map(existingMessage => (
                       <Card key={existingMessage.id} className={s.message}>
                         <div>{existingMessage.content}</div>
                       </Card>

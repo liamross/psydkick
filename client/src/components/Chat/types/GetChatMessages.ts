@@ -5,7 +5,7 @@
 // GraphQL query operation: GetChatMessages
 // ====================================================
 
-export interface GetChatMessages_me_chat_messages_messages {
+export interface GetChatMessages_me_chat_messagePage_messages {
   __typename: 'Message';
   id: string;
   createdAt: string;
@@ -15,9 +15,9 @@ export interface GetChatMessages_me_chat_messages_messages {
   chatId: string;
 }
 
-export interface GetChatMessages_me_chat_messages {
+export interface GetChatMessages_me_chat_messagePage {
   __typename: 'MessageConnection';
-  messages: GetChatMessages_me_chat_messages_messages[];
+  messages: GetChatMessages_me_chat_messagePage_messages[];
 }
 
 export interface GetChatMessages_me_chat {
@@ -27,7 +27,7 @@ export interface GetChatMessages_me_chat {
   updatedAt: string;
   clientId: string;
   therapistId: string;
-  messages: GetChatMessages_me_chat_messages;
+  messagePage: GetChatMessages_me_chat_messagePage;
 }
 
 export interface GetChatMessages_me {
