@@ -50,8 +50,12 @@ const Home: React.SFC<IHomeProps> = ({history}) => {
               <div>Create a new chat</div>
             </Card>
             {hasChats &&
-              data!.me!.chats.chats.map(({id, ...chat}) => (
-                <ChatTile key={id} chat={chat} />
+              data!.me!.chats.chats.map(chat => (
+                <ChatTile
+                  key={chat.id}
+                  chat={chat}
+                  onClick={() => history.push(`/chat/${chat.id}`)}
+                />
               ))}
             {hasChats && data!.me!.chats.hasMore ? (
               <Button

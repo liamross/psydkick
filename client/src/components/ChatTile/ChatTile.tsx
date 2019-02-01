@@ -5,6 +5,7 @@ import React from 'react';
 import {Query} from 'react-apollo';
 import s from './ChatTile.module.scss';
 import {GetUserInfo, GetUserInfoVariables} from './types/GetUserInfo';
+import {AllChats_me_chats_chats} from '../Home/types/AllChats';
 
 const GET_USER_INFO = gql`
   query GetUserInfo($therapistId: ID!, $clientId: ID!) {
@@ -17,17 +18,12 @@ const GET_USER_INFO = gql`
   }
 `;
 
-export interface IChatTileInformation {
-  createdAt: string;
-  clientId: string;
-  therapistId: string;
-}
-
 interface IChatTileProps {
-  chat: IChatTileInformation;
+  chat: AllChats_me_chats_chats;
+  onClick: () => any;
 }
 
-const ChatTile: React.SFC<IChatTileProps> = ({chat}) => {
+const ChatTile: React.SFC<IChatTileProps> = ({chat, onClick}) => {
   return (
     <Query<GetUserInfo, GetUserInfoVariables>
       query={GET_USER_INFO}
@@ -38,7 +34,7 @@ const ChatTile: React.SFC<IChatTileProps> = ({chat}) => {
         if (!data) return <p>{'Error fetching data.'}</p>;
 
         return (
-          <Card interactive onClick={undefined} className={s.component}>
+          <Card interactive onClick={onClick} className={s.component}>
             <div>Chat</div>
             <div>
               Client: {data.client ? data.client.name : 'No client found'}
