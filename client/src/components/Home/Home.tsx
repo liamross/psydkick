@@ -16,8 +16,14 @@ export const GET_CHATS = gql`
         chats {
           id
           createdAt
-          clientId
-          therapistId
+          client {
+            id
+            name
+          }
+          therapist {
+            id
+            name
+          }
         }
       }
     }

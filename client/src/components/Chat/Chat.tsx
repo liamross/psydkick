@@ -43,7 +43,10 @@ const SEND_MESSAGE = gql`
       content
       createdAt
       id
-      senderId
+      sender {
+        id
+        name
+      }
       updatedAt
     }
   }

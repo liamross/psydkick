@@ -21,7 +21,7 @@ const ChatInput: React.SFC<IChatInputProps> = ({value, onChange, onSubmit}) => {
           confirmOnEnterKey
           value={value}
           onChange={onChange}
-          // onConfirm={onSubmit} // Need to just detect enter message
+          // onConfirm={onSubmit} // TODO: Need to just detect enter message
         />
         <Button
           className={s.button}
