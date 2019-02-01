@@ -3,9 +3,9 @@ import gql from 'graphql-tag';
 import moment from 'moment';
 import React from 'react';
 import {Query} from 'react-apollo';
+import {AllChats_me_chats_chats} from '../Home/types/AllChats';
 import s from './ChatTile.module.scss';
 import {GetUserInfo, GetUserInfoVariables} from './types/GetUserInfo';
-import {AllChats_me_chats_chats} from '../Home/types/AllChats';
 
 const GET_USER_INFO = gql`
   query GetUserInfo($therapistId: ID!, $clientId: ID!) {

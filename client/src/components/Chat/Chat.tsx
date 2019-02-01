@@ -1,9 +1,9 @@
 import gql from 'graphql-tag';
 import React, {useState} from 'react';
+import {Mutation} from 'react-apollo';
 import {RouteComponentProps} from 'react-router';
 import ChatInput from '../ChatInput/ChatInput';
 import s from './Chat.module.scss';
-import {Mutation} from 'react-apollo';
 
 const SEND_MESSAGE = gql`
   mutation SendMessage($chatId: ID, $recipientId: ID, $content: String!) {

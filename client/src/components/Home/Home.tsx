@@ -1,11 +1,11 @@
 import {Button, Card} from '@blueprintjs/core';
 import gql from 'graphql-tag';
+import {History} from 'history';
 import React from 'react';
 import {Query} from 'react-apollo';
 import ChatTile from '../ChatTile/ChatTile';
 import s from './Home.module.scss';
 import {AllChats, AllChatsVariables} from './types/AllChats';
-import {History} from 'history';
 
 export const GET_CHATS = gql`
   query AllChats($after: String) {
