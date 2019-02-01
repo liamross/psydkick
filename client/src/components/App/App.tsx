@@ -8,10 +8,9 @@ import {
   RouteProps,
   Switch,
 } from 'react-router';
+import Auth from '../Auth/Auth';
 import Chat from '../Chat/Chat';
 import Home from '../Home/Home';
-import Login from '../Login/Login';
-import SignUp from '../SignUp/SignUp';
 import {IsUserLoggedIn} from './types/IsUserLoggedIn';
 
 const IS_LOGGED_IN = gql`
@@ -36,21 +35,11 @@ const App: React.SFC<{}> = () => {
         return (
           <Switch>
             <Route<IAuthRouteProps>
-              path={`/signup`}
+              path={['/login', '/signup']}
               render={({location, history}) => {
                 const redirect = location.state && location.state.redirect;
                 if (!data!.isLoggedIn) {
-                  return <SignUp redirect={redirect} history={history} />;
-                }
-                return <Redirect to={'/'} />;
-              }}
-            />
-            <Route<IAuthRouteProps>
-              path={`/login`}
-              render={({location, history}) => {
-                const redirect = location.state && location.state.redirect;
-                if (!data!.isLoggedIn) {
-                  return <Login redirect={redirect} history={history} />;
+                  return <Auth redirect={redirect} history={history} />;
                 }
                 return <Redirect to={'/'} />;
               }}
