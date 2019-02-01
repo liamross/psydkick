@@ -54,20 +54,20 @@ export const typeDefs = gql`
     isLoggedIn: Boolean!
   }
 
-  extend type Mutation {
-    # cacheSentMessage(
-    #   """
-    #   If the \`chatId\` of an existing chat is not given, \`recipientId\`
-    #   **must** be provided in order to instantiate a new chat.
-    #   """
-    #   chatId: ID
-    #   """
-    #   The \`recipientId\` must not be provided unless no \`chatId\` is given, in
-    #   which case it **must** be provided in order to instantiate a new chat
-    #   between the therapist (sender) and recipient.
-    #   """
-    #   recipientId: ID
-    #   content: String!
-    # ): Message!
-  }
+  # extend type Mutation {
+  # cacheSentMessage(
+  #   """
+  #   If the \`chatId\` of an existing chat is not given, \`recipientId\`
+  #   **must** be provided in order to instantiate a new chat.
+  #   """
+  #   chatId: ID
+  #   """
+  #   The \`recipientId\` must not be provided unless no \`chatId\` is given, in
+  #   which case it **must** be provided in order to instantiate a new chat
+  #   between the therapist (sender) and recipient.
+  #   """
+  #   recipientId: ID
+  #   content: String!
+  # ): Message!
+  # }
 `;
