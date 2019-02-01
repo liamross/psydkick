@@ -33,7 +33,7 @@ export default gql`
     name: String!
   }
 
-  type User {
+  type User { # TODO: implement user information?
     id: ID!
     name: String!
     chats(
@@ -64,8 +64,8 @@ export default gql`
     id: ID!
     createdAt: String!
     updatedAt: String!
-    clientId: ID!
-    therapistId: ID!
+    client: UserInformation!
+    therapist: UserInformation!
     messages(
       """
       The number of results to show. Must be >= 1. Default = 20
@@ -95,7 +95,7 @@ export default gql`
     createdAt: String!
     updatedAt: String!
     content: String!
-    senderId: ID!
-    chatId: ID!
+    sender: UserInformation!
+    chat: Chat!
   }
 `;
