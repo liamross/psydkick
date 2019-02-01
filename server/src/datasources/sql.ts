@@ -8,6 +8,15 @@ interface IContext {
   user: User;
 }
 
+interface IConvertedChat extends Chat {
+  client: User;
+  therapist: User;
+}
+
+interface IConvertedMessage extends Message {
+  sender: User;
+}
+
 export default class UserAPI extends DataSource<IContext> {
   private connection: Connection;
   private context: IContext | null;
@@ -35,12 +44,12 @@ export default class UserAPI extends DataSource<IContext> {
     return this.findUser({name});
   }
 
-  public async findUser({id, name}: {id?: string; name?: string}): Promise<User | null> {
+  public async findUser({id, name}: {id?: string | number; name?: string}): Promise<User | null> {
     if (!id && !name) throw new TypeError('Must provide one of id or name');
     const userRepo = this.connection.getRepository(User);
 
     // Check for existing user.
-    const findObject: {id?: string; name?: string} = {};
+    const findObject: {id?: string | number; name?: string} = {};
     if (id) findObject.id = id;
     if (name) findObject.name = name;
     const existingUser = await userRepo.findOne({where: findObject});
@@ -58,41 +67,55 @@ export default class UserAPI extends DataSource<IContext> {
     return userRepo.save(newUser);
   }
 
-  public async getAllChatsByUser(): Promise<Chat[]> {
+  public async getAllChatsByUser(): Promise<IConvertedChat[]> {
     const userId = this.context && this.context.user && this.context.user.id;
     const chatRepo = this.connection.getRepository(Chat);
-    return chatRepo.find({
+    const chats = await chatRepo.find({
       where: [{clientId: userId}, {therapistId: userId}],
       order: {createdAt: 'DESC'},
     });
+    const returnArray = [];
+    for (const chat of chats) {
+      const convertedChat = await this.convertChat(chat);
+      returnArray.push(convertedChat);
+    }
+    return returnArray;
   }
 
-  public async getChatById({id}: {id: number}): Promise<Chat | null> {
+  public async getChatById({id}: {id: number}): Promise<IConvertedChat | null> {
     const userId = this.context && this.context.user && this.context.user.id;
     const chatRepo = this.connection.getRepository(Chat);
     const chatOrUndefined = await chatRepo.findOne({
       where: [{clientId: userId, id}, {therapistId: userId, id}],
     });
-    return chatOrUndefined || null; // Convert undefined to null.
+    if (chatOrUndefined) return this.convertChat(chatOrUndefined);
+    return null;
   }
 
-  public async getAllMessagesByChat({chatId}: {chatId: number}): Promise<Message[]> {
+  public async getAllMessagesByChat({chatId}: {chatId: number}): Promise<IConvertedMessage[]> {
     // If no chat exists for this user, return early.
     const chat = await this.getChatById({id: chatId});
     if (!chat) return [];
 
     const messageRepo = this.connection.getRepository(Message);
-    return messageRepo.find({where: {chatId}, order: {createdAt: 'DESC'}});
+    const messages = await messageRepo.find({where: {chatId}, order: {createdAt: 'DESC'}});
+    const returnArray = [];
+    for (const message of messages) {
+      const convertedMessage = await this.convertMessage(message);
+      returnArray.push(convertedMessage);
+    }
+    return returnArray;
   }
 
-  public async getMessageById({chatId, id}: {chatId: number; id: number}): Promise<Message | null> {
+  public async getMessageById({chatId, id}: {chatId: number; id: number}): Promise<IConvertedMessage | null> {
     // If no chat exists for this user, return early.
     const chat = await this.getChatById({id: chatId});
     if (!chat) return null;
 
     const messageRepo = this.connection.getRepository(Message);
-    const chatOrUndefined = await messageRepo.findOne({where: {chatId, id}});
-    return chatOrUndefined || null; // Convert undefined to null.
+    const messageOrUndefined = await messageRepo.findOne({where: {chatId, id}});
+    if (messageOrUndefined) return this.convertMessage(messageOrUndefined);
+    return null;
   }
 
   public async sendMessage({
@@ -103,7 +126,7 @@ export default class UserAPI extends DataSource<IContext> {
     chatId?: number;
     recipientId?: number;
     content: string;
-  }): Promise<Message> {
+  }): Promise<IConvertedMessage> {
     const userId = this.context && this.context.user && this.context.user.id;
 
     // If no userId return string (which means error occurred).
@@ -134,6 +157,22 @@ export default class UserAPI extends DataSource<IContext> {
     }
 
     const messageRepo = this.connection.getRepository(Message);
-    return messageRepo.save(message);
+    const savedMessage = await messageRepo.save(message);
+
+    return this.convertMessage(savedMessage);
+  }
+
+  private async convertChat(chat: Chat): Promise<IConvertedChat> {
+    const client = await this.findUser({id: chat.clientId});
+    const therapist = await this.findUser({id: chat.therapistId});
+    if (!client) throw new Error('Client does not exist.');
+    if (!therapist) throw new Error('Therapist does not exist.');
+    return {...chat, client, therapist};
+  }
+
+  private async convertMessage(message: Message): Promise<IConvertedMessage> {
+    const sender = await this.findUser({id: message.senderId});
+    if (!sender) throw new Error('Sender does not exist.');
+    return {...message, sender};
   }
 }
