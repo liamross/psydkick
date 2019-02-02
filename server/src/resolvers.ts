@@ -71,7 +71,14 @@ const chatPage: IFieldResolver<UserModel, IContext> = async (_parentUser, {after
 };
 
 const chat: IFieldResolver<UserModel, IContext> = async (_parentUser, {id}, {dataSources}) => {
-  return dataSources.sqlAPI.getChatById({id});
+  const chatOrNull = await dataSources.sqlAPI.getChatById({id});
+  return (
+    chatOrNull && {
+      ...chatOrNull,
+      createdAt: chatOrNull.createdAt.toISOString(),
+      updatedAt: chatOrNull.updatedAt.toISOString(),
+    }
+  );
 };
 
 const User: IResolverObject<UserModel, IContext> = {chatPage, chat};
@@ -102,7 +109,14 @@ const messagePage: IFieldResolver<ChatModel, IContext> = async (parentChat, {aft
 };
 
 const message: IFieldResolver<ChatModel, IContext> = async (parentChat, {id}, {dataSources}) => {
-  return dataSources.sqlAPI.getMessageById({chatId: parentChat.id, id});
+  const messageOrNull = await dataSources.sqlAPI.getMessageById({chatId: parentChat.id, id});
+  return (
+    messageOrNull && {
+      ...messageOrNull,
+      createdAt: messageOrNull.createdAt.toISOString(),
+      updatedAt: messageOrNull.updatedAt.toISOString(),
+    }
+  );
 };
 
 const Chat: IResolverObject<ChatModel, IContext> = {messagePage, message};
