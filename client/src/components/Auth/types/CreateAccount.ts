@@ -6,6 +6,9 @@
 // ====================================================
 
 export interface CreateAccount {
+  /**
+   * Returns login token. If null is returned, user already exists.
+   */
   createAccount: string | null;
 }
 

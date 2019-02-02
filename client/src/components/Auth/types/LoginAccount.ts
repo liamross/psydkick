@@ -6,6 +6,9 @@
 // ====================================================
 
 export interface LoginAccount {
+  /**
+   * Returns login token. If null is returned, user does not exist.
+   */
   login: string | null;
 }
 
