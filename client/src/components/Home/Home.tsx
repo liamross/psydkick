@@ -2,43 +2,61 @@ import {Button, Card} from '@blueprintjs/core';
 import gql from 'graphql-tag';
 import React from 'react';
 import {Query} from 'react-apollo';
+import {RouteComponentProps} from 'react-router';
 import ChatTile from '../ChatTile/ChatTile';
+import ErrorState from '../ErrorState/ErrorState';
+import Loading from '../Loading/Loading';
 import s from './Home.module.scss';
 import {AllChats, AllChatsVariables} from './types/AllChats';
-import {History} from 'history';
 
 export const GET_CHATS = gql`
   query AllChats($after: String) {
     me {
-      chats(pageSize: 1, after: $after) {
+      id
+      chatPage(pageSize: 1, after: $after) {
         cursor
         hasMore
         chats {
           id
           createdAt
-          clientId
-          therapistId
+          client {
+            id
+            name
+          }
+          therapist {
+            id
+            name
+          }
         }
       }
     }
   }
 `;
 
-interface IHomeProps {
-  history: History<any>;
-}
+interface IHomeProps extends RouteComponentProps {}
 
 const Home: React.SFC<IHomeProps> = ({history}) => {
+  const mergeResults = (prev: AllChats, fetched: AllChats) => ({
+    ...fetched,
+    me: {
+      ...fetched.me!,
+      chats: {
+        ...fetched.me!.chatPage,
+        chats: [...prev.me!.chatPage.chats, ...fetched.me!.chatPage.chats],
+      },
+    },
+  });
+
   return (
     <Query<AllChats, AllChatsVariables> query={GET_CHATS}>
       {({data, loading, error, fetchMore}) => {
-        if (loading) return <p>{'Loading...'}</p>;
-        if (error) return <p>{error.message}</p>;
+        if (loading) return <Loading />;
+        if (error) return <ErrorState error={error} />;
 
         const hasChats: boolean = !!(
           data &&
           data.me &&
-          data.me.chats.chats.length
+          data.me.chatPage.chats.length
         );
 
         return (
@@ -50,29 +68,21 @@ const Home: React.SFC<IHomeProps> = ({history}) => {
               <div>Create a new chat</div>
             </Card>
             {hasChats &&
-              data!.me!.chats.chats.map(({id, ...chat}) => (
-                <ChatTile key={id} chat={chat} />
+              data!.me!.chatPage.chats.map(chat => (
+                <ChatTile
+                  key={chat.id}
+                  chat={chat}
+                  onClick={() => history.push(`/chat/${chat.id}`)}
+                />
               ))}
-            {hasChats && data!.me!.chats.hasMore ? (
+            {hasChats && data!.me!.chatPage.hasMore ? (
               <Button
                 onClick={() => {
                   fetchMore({
-                    variables: {after: data!.me!.chats.cursor},
+                    variables: {after: data!.me!.chatPage.cursor},
                     updateQuery: (prev, {fetchMoreResult}) => {
                       if (!fetchMoreResult) return prev;
-                      return {
-                        ...fetchMoreResult,
-                        me: {
-                          ...fetchMoreResult.me!,
-                          chats: {
-                            ...fetchMoreResult.me!.chats,
-                            chats: [
-                              ...prev.me!.chats.chats,
-                              ...fetchMoreResult.me!.chats.chats,
-                            ],
-                          },
-                        },
-                      };
+                      return mergeResults(prev, fetchMoreResult);
                     },
                   });
                 }}>

@@ -3,8 +3,14 @@ import gql from 'graphql-tag';
 import {History} from 'history';
 import React, {useEffect, useState} from 'react';
 import {ApolloConsumer, Mutation} from 'react-apollo';
-import s from './SignUp.module.scss';
-import {CreateAccount, CreateAccountVariables} from './types/CreateAccount';
+import ErrorState from '../ErrorState/ErrorState';
+import s from './Auth.module.scss';
+
+const LOGIN_ACCOUNT = gql`
+  mutation LoginAccount($name: String!) {
+    login(name: $name)
+  }
+`;
 
 const CREATE_ACCOUNT = gql`
   mutation CreateAccount($name: String!) {
@@ -12,54 +18,71 @@ const CREATE_ACCOUNT = gql`
   }
 `;
 
-interface ISignUpProps {
+interface IAuthProps {
   redirect?: string;
   history: History<any>;
 }
 
-const SignUp: React.SFC<ISignUpProps> = ({redirect, history}) => {
+const Auth: React.SFC<IAuthProps> = ({redirect, history}) => {
+  const isLogin = history.location.pathname === '/login';
+
   const [username, setUsername] = useState('');
   const [invalid, setInvalid] = useState(false);
   useEffect(() => {
     setInvalid(false);
-  }, [username]);
+  }, [username, isLogin]);
 
   useEffect(() => {
-    document.title = 'Create an account - Psydkick';
-  }, []);
+    if (isLogin) document.title = 'Log in - Psydkick';
+    if (!isLogin) document.title = 'Sign up - Psydkick';
+  }, [isLogin]);
+
+  const helperText = isLogin ? 'User does not exist' : 'Username is taken';
+  const route = isLogin ? '/signup' : '/login';
+  const routeButton = isLogin
+    ? 'Create a new account'
+    : 'Login as existing user';
+  const actionButton = isLogin ? 'Log in' : 'Sign up';
 
   return (
     <ApolloConsumer>
       {client => (
-        <Mutation<CreateAccount, CreateAccountVariables>
-          mutation={CREATE_ACCOUNT}
-          onCompleted={({createAccount}) => {
-            if (createAccount) {
-              localStorage.setItem('token', createAccount);
+        <Mutation
+          mutation={isLogin ? LOGIN_ACCOUNT : CREATE_ACCOUNT}
+          onCompleted={({
+            login,
+            createAccount,
+          }: {
+            login?: string | null;
+            createAccount?: string | null;
+          }) => {
+            const token = isLogin ? login : createAccount;
+            if (token) {
+              localStorage.setItem('token', token);
               client.writeData({data: {isLoggedIn: true}});
               if (redirect) {
-                history.push(redirect);
+                history.replace(redirect);
               } else {
-                history.push('/');
+                history.replace('/');
               }
             } else {
               setInvalid(true);
             }
           }}>
-          {(signUp, {loading, error}) => {
-            if (error) return <p>{error.message}</p>;
+          {(login, {loading, error}) => {
+            if (error) return <ErrorState error={error} />;
 
             return (
               <div className={s.component}>
                 <div className={s.container}>
                   <FormGroup
-                    helperText={invalid ? 'Name already exists' : undefined}
+                    helperText={invalid ? helperText : undefined}
                     intent={invalid ? Intent.DANGER : undefined}
                     label={'Username'}
-                    labelFor={'login-username'}
+                    labelFor={'auth-username'}
                     labelInfo={'*'}>
                     <InputGroup
-                      id={'login-username'}
+                      id={'auth-username'}
                       placeholder={'Enter username'}
                       intent={invalid ? Intent.DANGER : undefined}
                       value={username}
@@ -69,21 +92,19 @@ const SignUp: React.SFC<ISignUpProps> = ({redirect, history}) => {
                       }
                       onKeyPress={e => {
                         if (e.which === 13) {
-                          signUp({variables: {name: username}});
+                          login({variables: {name: username}});
                         }
                       }}
                     />
                   </FormGroup>
                   <div className={s.buttonFlex}>
-                    <Button minimal onClick={() => history.replace('/login')}>
-                      {'Sign in as existing user'}
+                    <Button minimal onClick={() => history.replace(route)}>
+                      {routeButton}
                     </Button>
                     <Button
                       disabled={loading || !username || invalid}
-                      onClick={() => {
-                        signUp({variables: {name: username}});
-                      }}>
-                      {'Create account'}
+                      onClick={() => login({variables: {name: username}})}>
+                      {actionButton}
                     </Button>
                   </div>
                 </div>
@@ -96,4 +117,4 @@ const SignUp: React.SFC<ISignUpProps> = ({redirect, history}) => {
   );
 };
 
-export default SignUp;
+export default Auth;

@@ -17,7 +17,7 @@ import {connectDatabase, logger} from './utils';
 
   // Set up the global context for each resolver, using the req
   const context = async ({req}: {req: Request}) => {
-    // simple auth check on every request
+    // Simple auth check on every request
     const auth = (req.headers && req.headers.authorization) || '';
     const name = Buffer.from(auth, 'base64').toString('ascii');
 

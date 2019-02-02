@@ -1,5 +1,5 @@
 import {Button, EditableText} from '@blueprintjs/core';
-import React, {memo} from 'react';
+import React from 'react';
 import s from './ChatInput.module.scss';
 
 interface IChatInputProps {
@@ -21,7 +21,7 @@ const ChatInput: React.SFC<IChatInputProps> = ({value, onChange, onSubmit}) => {
           confirmOnEnterKey
           value={value}
           onChange={onChange}
-          // onConfirm={onSubmit} // Need to just detect enter message
+          // onConfirm={onSubmit} // TODO: Need to just detect enter message
         />
         <Button
           className={s.button}
@@ -34,4 +34,4 @@ const ChatInput: React.SFC<IChatInputProps> = ({value, onChange, onSubmit}) => {
   );
 };
 
-export default memo(ChatInput);
+export default ChatInput;

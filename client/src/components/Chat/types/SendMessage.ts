@@ -5,13 +5,19 @@
 // GraphQL mutation operation: SendMessage
 // ====================================================
 
+export interface SendMessage_sendMessage_sender {
+  __typename: "UserInformation";
+  id: string;
+  name: string;
+}
+
 export interface SendMessage_sendMessage {
   __typename: "Message";
   chatId: string;
   content: string;
   createdAt: string;
   id: string;
-  senderId: string;
+  sender: SendMessage_sendMessage_sender;
   updatedAt: string;
 }
 

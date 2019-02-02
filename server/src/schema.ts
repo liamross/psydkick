@@ -2,7 +2,7 @@ import {gql} from 'apollo-server';
 
 export default gql`
   type Query {
-    me: User
+    me: User!
     """
     Must provide \`id\` and/or \`name\`.
     """
@@ -24,8 +24,14 @@ export default gql`
       recipientId: ID
       content: String!
     ): Message!
-    login(name: String!): String # login token
-    createAccount(name: String!): String # login token
+    """
+    Returns login token. If null is returned, user does not exist.
+    """
+    login(name: String!): String
+    """
+    Returns login token. If null is returned, user already exists.
+    """
+    createAccount(name: String!): String
   }
 
   type UserInformation {
@@ -33,10 +39,10 @@ export default gql`
     name: String!
   }
 
-  type User {
+  type User { # TODO: implement user information?
     id: ID!
     name: String!
-    chats(
+    chatPage(
       """
       The number of results to show. Must be >= 1. Default = 20
       """
@@ -64,9 +70,9 @@ export default gql`
     id: ID!
     createdAt: String!
     updatedAt: String!
-    clientId: ID!
-    therapistId: ID!
-    messages(
+    client: UserInformation!
+    therapist: UserInformation!
+    messagePage(
       """
       The number of results to show. Must be >= 1. Default = 20
       """
@@ -95,7 +101,7 @@ export default gql`
     createdAt: String!
     updatedAt: String!
     content: String!
-    senderId: ID!
+    sender: UserInformation!
     chatId: ID!
   }
 `;
