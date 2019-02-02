@@ -4,6 +4,7 @@ import {History} from 'history';
 import React from 'react';
 import {Query} from 'react-apollo';
 import ChatTile from '../ChatTile/ChatTile';
+import ErrorState from '../ErrorState/ErrorState';
 import Loading from '../Loading/Loading';
 import s from './Home.module.scss';
 import {AllChats, AllChatsVariables} from './types/AllChats';
@@ -56,7 +57,7 @@ const Home: React.SFC<IHomeProps> = ({history}) => {
     <Query<AllChats, AllChatsVariables> query={GET_CHATS}>
       {({data, loading, error, fetchMore}) => {
         if (loading) return <Loading />;
-        if (error) return <p>{error.message}</p>;
+        if (error) return <ErrorState error={error} />;
 
         const hasChats: boolean = !!(
           data &&

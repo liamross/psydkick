@@ -10,6 +10,7 @@ import {
 } from 'react-router';
 import Auth from '../Auth/Auth';
 import Chat from '../Chat/Chat';
+import ErrorState from '../ErrorState/ErrorState';
 import Home from '../Home/Home';
 import Loading from '../Loading/Loading';
 import {IsUserLoggedIn} from './types/IsUserLoggedIn';
@@ -31,7 +32,7 @@ const App: React.SFC<{}> = () => {
     <Query<IsUserLoggedIn> query={IS_LOGGED_IN}>
       {({loading, error, data}) => {
         if (loading && !data) return <Loading />;
-        if (error) return <p>{error.message}</p>;
+        if (error) return <ErrorState error={error} />;
 
         return (
           <Switch>

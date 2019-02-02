@@ -3,6 +3,7 @@ import gql from 'graphql-tag';
 import {History} from 'history';
 import React, {useEffect, useState} from 'react';
 import {ApolloConsumer, Mutation} from 'react-apollo';
+import ErrorState from '../ErrorState/ErrorState';
 import s from './Auth.module.scss';
 
 const LOGIN_ACCOUNT = gql`
@@ -69,7 +70,7 @@ const Auth: React.SFC<IAuthProps> = ({redirect, history}) => {
             }
           }}>
           {(login, {loading, error}) => {
-            if (error) return <p>{error.message}</p>;
+            if (error) return <ErrorState error={error} />;
 
             return (
               <div className={s.component}>

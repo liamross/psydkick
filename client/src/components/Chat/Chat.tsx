@@ -4,6 +4,7 @@ import React, {useState} from 'react';
 import {Mutation, Query} from 'react-apollo';
 import {RouteComponentProps} from 'react-router';
 import ChatInput from '../ChatInput/ChatInput';
+import ErrorState from '../ErrorState/ErrorState';
 import Loading from '../Loading/Loading';
 import s from './Chat.module.scss';
 import {
@@ -77,7 +78,7 @@ const Chat: React.SFC<IChatProps> = ({match}) => {
         }}>
         {(sendMessage, {loading, error}) => {
           if (loading) return <Loading />;
-          if (error) return <p>{error.message}</p>;
+          if (error) return <ErrorState error={error} />;
 
           const handleSubmit = () => {
             sendMessage({variables: {chatId, recipientId, content: message}});
@@ -117,7 +118,7 @@ const Chat: React.SFC<IChatProps> = ({match}) => {
       variables={{chatId}}>
       {({data, loading, error, fetchMore}) => {
         if (loading) return <Loading />;
-        if (error) return <p>{error.message}</p>;
+        if (error) return <ErrorState error={error} />;
 
         if (!(data && data.me)) return; // TODO: sign out and maybe do this everywhere.
 
