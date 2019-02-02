@@ -180,7 +180,8 @@ export default class UserAPI extends DataSource<IContext> {
 
   private async convertChat(chat: Chat): Promise<IConvertedChat> {
     logger('convertChat', chat);
-    const client = await this.findUser({id: chat.clientId});
+    // const client = await this.findUser({id: chat.clientId});
+    const client = await this.findUser({id: chat.therapistId});
     const therapist = await this.findUser({id: chat.therapistId});
     if (!client) throw new DatabaseError('Client does not exist.');
     if (!therapist) throw new DatabaseError('Therapist does not exist.');

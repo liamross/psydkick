@@ -1,6 +1,6 @@
 import gql from 'graphql-tag';
 import React from 'react';
-import {Query} from 'react-apollo';
+import {ApolloConsumer, Query} from 'react-apollo';
 import {
   Redirect,
   Route,
@@ -9,9 +9,8 @@ import {
   Switch,
 } from 'react-router';
 import Auth from '../Auth/Auth';
-import Chat from '../Chat/Chat';
+import AuthCheck from '../AuthCheck/AuthCheck';
 import ErrorState from '../ErrorState/ErrorState';
-import Home from '../Home/Home';
 import Loading from '../Loading/Loading';
 import {IsUserLoggedIn} from './types/IsUserLoggedIn';
 
@@ -46,7 +45,6 @@ const App: React.SFC<{}> = () => {
                 return <Redirect to={'/'} />;
               }}
             />
-            <Route path={`/chat/:chatId?`} component={Chat} />
             <Route
               render={({history, location: {pathname}}) => {
                 if (!data!.isLoggedIn) {
@@ -56,7 +54,7 @@ const App: React.SFC<{}> = () => {
                     />
                   );
                 }
-                return <Home history={history} />;
+                return <AuthCheck history={history} />;
               }}
             />
           </Switch>

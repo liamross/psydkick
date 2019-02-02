@@ -1,8 +1,8 @@
 import {Button, Card} from '@blueprintjs/core';
 import gql from 'graphql-tag';
-import {History} from 'history';
 import React from 'react';
 import {Query} from 'react-apollo';
+import {RouteComponentProps} from 'react-router';
 import ChatTile from '../ChatTile/ChatTile';
 import ErrorState from '../ErrorState/ErrorState';
 import Loading from '../Loading/Loading';
@@ -33,15 +33,9 @@ export const GET_CHATS = gql`
   }
 `;
 
-interface IHomeProps {
-  history: History<any>;
-}
+interface IHomeProps extends RouteComponentProps {}
 
 const Home: React.SFC<IHomeProps> = ({history}) => {
-  // useEffect(() => {
-
-  // }, [history])
-
   const mergeResults = (prev: AllChats, fetched: AllChats) => ({
     ...fetched,
     me: {

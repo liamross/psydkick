@@ -21,15 +21,21 @@ const GET_CHAT_MESSAGES = gql`
         id
         createdAt
         updatedAt
-        clientId
-        therapistId
+        client {
+          id
+        }
+        therapist {
+          id
+        }
         messagePage(pageSize: 10, after: $after) {
           messages {
             id
             createdAt
             updatedAt
             content
-            senderId
+            sender {
+              id
+            }
             chatId
           }
         }
