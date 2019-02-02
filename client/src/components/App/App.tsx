@@ -54,7 +54,11 @@ const App: React.SFC<{}> = () => {
                     />
                   );
                 }
-                return <AuthCheck history={history} />;
+                return (
+                  <ApolloConsumer>
+                    {client => <AuthCheck client={client} />}
+                  </ApolloConsumer>
+                );
               }}
             />
           </Switch>

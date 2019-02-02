@@ -1,23 +1,18 @@
-import {History} from 'history';
+import ApolloClient from 'apollo-client';
 import React, {useEffect, useState} from 'react';
-import {Route, Switch} from 'react-router';
+import {Route, RouteComponentProps, Switch, withRouter} from 'react-router';
 import Chat from '../Chat/Chat';
-import ErrorState from '../ErrorState/ErrorState';
 import Home from '../Home/Home';
 
-interface IAuthCheckProps {
-  history: History<any>;
+interface IAuthCheckProps extends RouteComponentProps {
+  client: ApolloClient<any>;
 }
 
-const AuthCheck: React.SFC<IAuthCheckProps> = ({history}) => {
-  const [token, setToken] = useState(localStorage.getItem('token'));
+const AuthCheck: React.SFC<IAuthCheckProps> = ({client, history}) => {
   useEffect(() => {
-    setToken(localStorage.getItem('token'));
+    const token = localStorage.getItem('token');
+    if (!token) client.writeData({data: {isLoggedIn: false}});
   }, [history.location.pathname]);
-
-  if (!token) {
-    return <ErrorState />;
-  }
 
   return (
     <Switch>
@@ -27,4 +22,4 @@ const AuthCheck: React.SFC<IAuthCheckProps> = ({history}) => {
   );
 };
 
-export default AuthCheck;
+export default withRouter(AuthCheck);

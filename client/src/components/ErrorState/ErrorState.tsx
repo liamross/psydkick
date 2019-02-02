@@ -1,83 +1,51 @@
 import {Button, NonIdealState} from '@blueprintjs/core';
 import {ApolloError} from 'apollo-client';
 import React from 'react';
-import {RouteComponentProps, withRouter} from 'react-router';
+import {ApolloConsumer} from 'react-apollo';
 import {DatabaseError, InputError, ValidationError} from './errorParams';
 import s from './ErrorState.module.scss';
-import {ApolloConsumer} from 'react-apollo';
 
-interface IErrorStateProps extends RouteComponentProps {
-  error?: ApolloError;
+interface IErrorStateProps {
+  error: ApolloError;
   /**
    * Only shown if the error is not a validaiton error.
    */
   actionButton?: {buttonText: string; onClick: () => any};
 }
 
-const ErrorState: React.SFC<IErrorStateProps> = ({
-  error,
-  actionButton,
-  history,
-  location: {pathname},
-}) => {
+const ErrorState: React.SFC<IErrorStateProps> = ({error, actionButton}) => {
   return (
     <ApolloConsumer>
       {client => {
-        let title;
-        let description;
-        // let moreInformation;
-        let localActionButton;
-        if (error) {
-          title = error.name;
-          description =
-            error.message.length > 100 ? 'An error has occured' : error.message;
-          // moreInformation = error.extraInfo;
-          localActionButton = actionButton;
+        let title = error.name;
+        let description =
+          error.message.length > 100 ? 'An error has occured' : error.message;
+        // let moreInformation = error.extraInfo;
 
-          if (error.graphQLErrors && error.graphQLErrors.length) {
-            const graphQLError = error.graphQLErrors[0];
-            const code =
-              graphQLError.extensions && graphQLError.extensions.exception
-                ? graphQLError.extensions.exception.code
-                : undefined;
-            // moreInformation = graphQLError.message;
+        if (error.graphQLErrors && error.graphQLErrors.length) {
+          const graphQLError = error.graphQLErrors[0];
+          const code =
+            graphQLError.extensions && graphQLError.extensions.exception
+              ? graphQLError.extensions.exception.code
+              : undefined;
+          // moreInformation = graphQLError.message;
 
-            if (code === InputError.code) {
-              title = 'Internal server error';
-              description =
-                "This is bad and there isn't anything you can do about it!";
-            }
-
-            if (code === DatabaseError.code) {
-              title = 'Error finding resources';
-              description =
-                "Some of the things you asked for don't exist in the database";
-            }
-
-            if (code === ValidationError.code) {
-              localStorage.removeItem('token');
-              title = 'Your session has expired';
-              description = 'Click the button below to sign in';
-              localActionButton = {
-                buttonText: 'Log in',
-                onClick: () => {
-                  history.replace('/login', {redirect: pathname});
-                  client.writeData({data: {isLoggedIn: false}});
-                },
-              };
-            }
+          if (code === InputError.code) {
+            title = 'Internal server error';
+            description =
+              "This is bad and there isn't anything you can do about it!";
           }
-        } else {
-          localStorage.removeItem('token');
-          title = 'Your session has expired';
-          description = 'Click the button below to sign in';
-          localActionButton = {
-            buttonText: 'Log in',
-            onClick: () => {
-              history.replace('/login', {redirect: pathname});
-              client.writeData({data: {isLoggedIn: false}});
-            },
-          };
+
+          if (code === DatabaseError.code) {
+            title = 'Error finding resources';
+            description =
+              "Some of the things you asked for don't exist in the database";
+          }
+
+          if (code === ValidationError.code) {
+            client.writeData({data: {isLoggedIn: false}});
+            localStorage.removeItem('token');
+          }
         }
 
         return (
@@ -86,9 +54,9 @@ const ErrorState: React.SFC<IErrorStateProps> = ({
               title={title}
               description={description}
               action={
-                localActionButton ? (
-                  <Button onClick={localActionButton.onClick}>
-                    {localActionButton.buttonText}
+                actionButton ? (
+                  <Button onClick={actionButton.onClick}>
+                    {actionButton.buttonText}
                   </Button>
                 ) : (
                   undefined
@@ -102,4 +70,4 @@ const ErrorState: React.SFC<IErrorStateProps> = ({
   );
 };
 
-export default withRouter(ErrorState);
+export default ErrorState;
