@@ -11,6 +11,7 @@ import {
 import Auth from '../Auth/Auth';
 import Chat from '../Chat/Chat';
 import Home from '../Home/Home';
+import Loading from '../Loading/Loading';
 import {IsUserLoggedIn} from './types/IsUserLoggedIn';
 
 const IS_LOGGED_IN = gql`
@@ -29,7 +30,7 @@ const App: React.SFC<{}> = () => {
   return (
     <Query<IsUserLoggedIn> query={IS_LOGGED_IN}>
       {({loading, error, data}) => {
-        if (loading && !data) return <p>{'Loading...'}</p>;
+        if (loading && !data) return <Loading />;
         if (error) return <p>{error.message}</p>;
 
         return (

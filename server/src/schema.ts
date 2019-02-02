@@ -2,7 +2,7 @@ import {gql} from 'apollo-server';
 
 export default gql`
   type Query {
-    me: User
+    me: User!
     """
     Must provide \`id\` and/or \`name\`.
     """
@@ -24,8 +24,14 @@ export default gql`
       recipientId: ID
       content: String!
     ): Message!
-    login(name: String!): String # login token
-    createAccount(name: String!): String # login token
+    """
+    Returns login token. If null is returned, user does not exist.
+    """
+    login(name: String!): String
+    """
+    Returns login token. If null is returned, user already exists.
+    """
+    createAccount(name: String!): String
   }
 
   type UserInformation {
@@ -96,6 +102,6 @@ export default gql`
     updatedAt: String!
     content: String!
     sender: UserInformation!
-    chat: Chat!
+    chatId: ID!
   }
 `;

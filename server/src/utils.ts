@@ -64,3 +64,7 @@ export const logger = (...args: any[]) => {
   const formattedDate = `[${date.format('DD/MM/YYYY-HH:mm:ss.SSS')}]`;
   return console.log(formattedDate, ...args);
 };
+
+export const isId = (id: any): boolean => {
+  return typeof id === 'string' || typeof id === 'number';
+};

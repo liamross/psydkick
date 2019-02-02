@@ -1,11 +1,13 @@
 import {DataSource, DataSourceConfig} from 'apollo-datasource';
 import {Connection} from 'typeorm';
+import InvalidUserError from '../errors/InvalidUserError';
 import {Chat} from '../models/chat';
 import {Message} from '../models/message';
 import {User} from '../models/user';
+import {logger, isId} from '../utils';
 
 interface IContext {
-  user: User;
+  user: User | null;
 }
 
 interface IConvertedChat extends Chat {
@@ -19,12 +21,12 @@ interface IConvertedMessage extends Message {
 
 export default class UserAPI extends DataSource<IContext> {
   private connection: Connection;
-  private context: IContext | null;
+  private context!: IContext;
 
   constructor({connection}: {connection: Connection}) {
     super();
     this.connection = connection;
-    this.context = null;
+    // this.context = null;
   }
 
   /**
@@ -35,17 +37,18 @@ export default class UserAPI extends DataSource<IContext> {
    * assign this.cache to the request cache in order to access cached values.
    */
   public initialize(config: DataSourceConfig<IContext>): void {
+    logger('initialize');
     this.context = config.context;
   }
 
-  public async currentUser(): Promise<User | null> {
-    const name = this.context && this.context.user && this.context.user && this.context.user.name;
-    if (!name) return null;
-    return this.findUser({name});
+  public async currentUser(): Promise<User> {
+    logger('currentUser');
+    return this.validateUser();
   }
 
   public async findUser({id, name}: {id?: string | number; name?: string}): Promise<User | null> {
-    if (!id && !name) throw new TypeError('Must provide one of id or name');
+    logger('findUser');
+    if (!isId(id) && !name) throw new TypeError('Must provide one of id or name');
     const userRepo = this.connection.getRepository(User);
 
     // Check for existing user.
@@ -57,6 +60,7 @@ export default class UserAPI extends DataSource<IContext> {
   }
 
   public async createUser({name}: {name: string}): Promise<User | null> {
+    logger('createUser');
     const existingUser = await this.findUser({name});
     if (existingUser) return null; // Return null: user exists.
 
@@ -68,7 +72,8 @@ export default class UserAPI extends DataSource<IContext> {
   }
 
   public async getAllChatsByUser(): Promise<IConvertedChat[]> {
-    const userId = this.context && this.context.user && this.context.user.id;
+    logger('getAllChatsByUser');
+    const {id: userId} = this.validateUser();
     const chatRepo = this.connection.getRepository(Chat);
     const chats = await chatRepo.find({
       where: [{clientId: userId}, {therapistId: userId}],
@@ -83,7 +88,8 @@ export default class UserAPI extends DataSource<IContext> {
   }
 
   public async getChatById({id}: {id: number}): Promise<IConvertedChat | null> {
-    const userId = this.context && this.context.user && this.context.user.id;
+    logger('getChatById');
+    const {id: userId} = this.validateUser();
     const chatRepo = this.connection.getRepository(Chat);
     const chatOrUndefined = await chatRepo.findOne({
       where: [{clientId: userId, id}, {therapistId: userId, id}],
@@ -93,6 +99,7 @@ export default class UserAPI extends DataSource<IContext> {
   }
 
   public async getAllMessagesByChat({chatId}: {chatId: number}): Promise<IConvertedMessage[]> {
+    logger('getAllMessagesByChat');
     // If no chat exists for this user, return early.
     const chat = await this.getChatById({id: chatId});
     if (!chat) return [];
@@ -108,6 +115,7 @@ export default class UserAPI extends DataSource<IContext> {
   }
 
   public async getMessageById({chatId, id}: {chatId: number; id: number}): Promise<IConvertedMessage | null> {
+    logger('getMessageById');
     // If no chat exists for this user, return early.
     const chat = await this.getChatById({id: chatId});
     if (!chat) return null;
@@ -127,13 +135,11 @@ export default class UserAPI extends DataSource<IContext> {
     recipientId?: number;
     content: string;
   }): Promise<IConvertedMessage> {
-    const userId = this.context && this.context.user && this.context.user.id;
+    logger('sendMessage');
+    const {id: userId} = this.validateUser();
 
-    // If no userId return string (which means error occurred).
-    if (!userId) throw new Error('Not signed in');
-
-    if (!chatId && !recipientId) throw new TypeError('Must provide one of chatId or recipientId');
-    if (chatId && recipientId) throw new TypeError('Can not provide both chatId and recipientId');
+    if (!isId(chatId) && !isId(recipientId)) throw new TypeError('Must provide one of chatId or recipientId');
+    if (isId(chatId) && isId(recipientId)) throw new TypeError('Can not provide both chatId and recipientId');
 
     const message = new Message();
     message.senderId = userId;
@@ -162,7 +168,15 @@ export default class UserAPI extends DataSource<IContext> {
     return this.convertMessage(savedMessage);
   }
 
+  private validateUser(): User {
+    logger('validateUser');
+    const user = this.context.user;
+    if (!user) throw new InvalidUserError();
+    return user;
+  }
+
   private async convertChat(chat: Chat): Promise<IConvertedChat> {
+    logger('convertChat');
     const client = await this.findUser({id: chat.clientId});
     const therapist = await this.findUser({id: chat.therapistId});
     if (!client) throw new Error('Client does not exist.');
@@ -171,6 +185,7 @@ export default class UserAPI extends DataSource<IContext> {
   }
 
   private async convertMessage(message: Message): Promise<IConvertedMessage> {
+    logger('convertMessage');
     const sender = await this.findUser({id: message.senderId});
     if (!sender) throw new Error('Sender does not exist.');
     return {...message, sender};

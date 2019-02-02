@@ -4,12 +4,14 @@ import {History} from 'history';
 import React from 'react';
 import {Query} from 'react-apollo';
 import ChatTile from '../ChatTile/ChatTile';
+import Loading from '../Loading/Loading';
 import s from './Home.module.scss';
 import {AllChats, AllChatsVariables} from './types/AllChats';
 
 export const GET_CHATS = gql`
   query AllChats($after: String) {
     me {
+      id
       chatPage(pageSize: 1, after: $after) {
         cursor
         hasMore
@@ -35,10 +37,25 @@ interface IHomeProps {
 }
 
 const Home: React.SFC<IHomeProps> = ({history}) => {
+  // useEffect(() => {
+
+  // }, [history])
+
+  const mergeResults = (prev: AllChats, fetched: AllChats) => ({
+    ...fetched,
+    me: {
+      ...fetched.me!,
+      chats: {
+        ...fetched.me!.chatPage,
+        chats: [...prev.me!.chatPage.chats, ...fetched.me!.chatPage.chats],
+      },
+    },
+  });
+
   return (
     <Query<AllChats, AllChatsVariables> query={GET_CHATS}>
       {({data, loading, error, fetchMore}) => {
-        if (loading) return <p>{'Loading...'}</p>;
+        if (loading) return <Loading />;
         if (error) return <p>{error.message}</p>;
 
         const hasChats: boolean = !!(
@@ -70,19 +87,7 @@ const Home: React.SFC<IHomeProps> = ({history}) => {
                     variables: {after: data!.me!.chatPage.cursor},
                     updateQuery: (prev, {fetchMoreResult}) => {
                       if (!fetchMoreResult) return prev;
-                      return {
-                        ...fetchMoreResult,
-                        me: {
-                          ...fetchMoreResult.me!,
-                          chats: {
-                            ...fetchMoreResult.me!.chatPage,
-                            chats: [
-                              ...prev.me!.chatPage.chats,
-                              ...fetchMoreResult.me!.chatPage.chats,
-                            ],
-                          },
-                        },
-                      };
+                      return mergeResults(prev, fetchMoreResult);
                     },
                   });
                 }}>
