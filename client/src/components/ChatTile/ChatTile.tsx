@@ -13,8 +13,8 @@ const ChatTile: React.SFC<IChatTileProps> = ({chat, onClick}) => {
   return (
     <Card interactive onClick={onClick} className={s.component}>
       <div>Chat</div>
-      <div>Client: {/* chat.client.name */ ''}</div>
-      <div>Therapist: {/* chat.therapist.name */ ''}</div>
+      <div>Client: {chat.client.name}</div>
+      <div>Therapist: {chat.therapist.name}</div>
       <div>Created: {moment(chat.createdAt).fromNow()}</div>
     </Card>
   );

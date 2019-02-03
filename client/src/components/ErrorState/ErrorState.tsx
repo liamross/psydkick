@@ -14,6 +14,7 @@ interface IErrorStateProps {
 }
 
 const ErrorState: React.SFC<IErrorStateProps> = ({error, actionButton}) => {
+  console.error(error);
   return (
     <ApolloConsumer>
       {client => {
