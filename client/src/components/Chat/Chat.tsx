@@ -17,10 +17,10 @@ import {SendMessage, SendMessageVariables} from './types/SendMessage';
 const GET_CHAT_MESSAGES = gql`
   query GetChatMessages($chatId: ID!, $after: String) {
     me {
+      id
       chat(id: $chatId) {
         id
         createdAt
-        updatedAt
         client {
           id
         }
@@ -31,12 +31,10 @@ const GET_CHAT_MESSAGES = gql`
           messages {
             id
             createdAt
-            updatedAt
             content
             sender {
               id
             }
-            chatId
           }
         }
       }
@@ -62,7 +60,7 @@ const SEND_MESSAGE = gql`
 
 interface IChatProps extends RouteComponentProps<{chatId?: string}, any, any> {}
 
-const Chat: React.SFC<IChatProps> = ({match}) => {
+const Chat: React.SFC<IChatProps> = ({match, history}) => {
   const [message, setMessage] = useState('');
 
   const chatId: string | undefined = match.params.chatId;
@@ -73,13 +71,18 @@ const Chat: React.SFC<IChatProps> = ({match}) => {
     return (
       <Mutation<SendMessage, SendMessageVariables>
         mutation={SEND_MESSAGE}
-        onCompleted={({sendMessage}) => {
+        refetchQueries={() => {
           if (chatId) {
-            // Push message to chat
-          } else {
-            // 1. Push chat to state
-            // 2. Push message to chat
-            // 3. Push chat ID to URL
+            setMessage('');
+            return [{query: GET_CHAT_MESSAGES, variables: {chatId}}];
+          }
+          return [];
+        }}
+        awaitRefetchQueries
+        onCompleted={({sendMessage}) => {
+          if (!chatId) {
+            setMessage('');
+            history.replace(`/chat/${sendMessage.chatId}`);
           }
         }}>
         {(sendMessage, {loading, error}) => {
@@ -88,7 +91,6 @@ const Chat: React.SFC<IChatProps> = ({match}) => {
 
           const handleSubmit = () => {
             sendMessage({variables: {chatId, recipientId, content: message}});
-            setMessage('');
           };
 
           return (
@@ -126,9 +128,7 @@ const Chat: React.SFC<IChatProps> = ({match}) => {
         if (loading) return <Loading />;
         if (error) return <ErrorState error={error} />;
 
-        if (!(data && data.me)) return; // TODO: sign out and maybe do this everywhere.
-
-        return renderMutation(data.me.chat);
+        return renderMutation(data!.me.chat);
       }}
     </Query>
   );
