@@ -45,6 +45,12 @@ export default class UserAPI extends DataSource<IContext> {
     return this.validateUser();
   }
 
+  public async allUsers(): Promise<User[]> {
+    logger('sql.allUsers');
+    const userRepo = this.connection.getRepository(User);
+    return userRepo.find();
+  }
+
   public async findUser({id, name}: {id?: string | number; name?: string}): Promise<User | null> {
     logger('sql.findUser', id, name);
     if (!isId(id) && !name) throw new InputError('Must provide one of `id` or `name`');

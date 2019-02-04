@@ -7,6 +7,7 @@ export default gql`
     Must provide \`id\` and/or \`name\`.
     """
     userInfo(id: ID, name: String): UserInformation
+    users: [User!]!
   }
 
   type Mutation {

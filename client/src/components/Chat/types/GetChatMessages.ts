@@ -5,6 +5,16 @@
 // GraphQL query operation: GetChatMessages
 // ====================================================
 
+export interface GetChatMessages_me_chat_client {
+  __typename: "UserInformation";
+  id: string;
+}
+
+export interface GetChatMessages_me_chat_therapist {
+  __typename: "UserInformation";
+  id: string;
+}
+
 export interface GetChatMessages_me_chat_messagePage_messages_sender {
   __typename: "UserInformation";
   id: string;
@@ -26,6 +36,9 @@ export interface GetChatMessages_me_chat_messagePage {
 export interface GetChatMessages_me_chat {
   __typename: "Chat";
   id: string;
+  createdAt: string;
+  client: GetChatMessages_me_chat_client;
+  therapist: GetChatMessages_me_chat_therapist;
   messagePage: GetChatMessages_me_chat_messagePage;
 }
 
