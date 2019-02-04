@@ -37,6 +37,11 @@ export const paginateResults = <T extends IItem>({
   results,
   getCursor,
 }: IPaginateResultsInput<T>): T[] => {
+  logger({
+    cursor,
+    pageSize,
+    results,
+  });
   if (pageSize < 1) return [];
   if (!cursor) return results.slice(0, pageSize);
 
@@ -52,7 +57,9 @@ export const paginateResults = <T extends IItem>({
     return itemCursor ? cursor === itemCursor : false;
   });
 
-  return cursorIndex >= 0
+  logger();
+
+  return cursorIndex !== -1
     ? cursorIndex === results.length - 1 // don't let us overflow
       ? []
       : results.slice(cursorIndex + 1, Math.min(results.length, cursorIndex + 1 + pageSize))

@@ -5,6 +5,7 @@ import {Mutation, Query} from 'react-apollo';
 import {RouteComponentProps} from 'react-router';
 import ChatInput from '../ChatInput/ChatInput';
 import ErrorState from '../ErrorState/ErrorState';
+import {GET_CHATS} from '../Home/Home';
 import Loading from '../Loading/Loading';
 import s from './Chat.module.scss';
 import {
@@ -72,13 +73,14 @@ const Chat: React.SFC<IChatProps> = ({match, history}) => {
       <Mutation<SendMessage, SendMessageVariables>
         mutation={SEND_MESSAGE}
         refetchQueries={() => {
+          // If chat exists, refetch get messages to populate message in chat.
           if (chatId) {
             setMessage('');
             return [{query: GET_CHAT_MESSAGES, variables: {chatId}}];
           }
-          return [];
+          // If new chat is being made, refetch get chats to populate home.
+          return [{query: GET_CHATS}];
         }}
-        awaitRefetchQueries
         onCompleted={({sendMessage}) => {
           if (!chatId) {
             setMessage('');
@@ -86,8 +88,9 @@ const Chat: React.SFC<IChatProps> = ({match, history}) => {
           }
         }}>
         {(sendMessage, {loading, error}) => {
-          if (loading) return <Loading />;
-          if (error) return <ErrorState error={error} />;
+          // TODO:
+          // 1. loading: show sending message
+          // 2. error: show 'message not sent, retry?'
 
           const handleSubmit = () => {
             sendMessage({variables: {chatId, recipientId, content: message}});
@@ -97,11 +100,13 @@ const Chat: React.SFC<IChatProps> = ({match, history}) => {
             <div className={s.component}>
               <div className={s.messages}>
                 {chat
-                  ? chat.messagePage.messages.reverse().map(existingMessage => (
-                      <Card key={existingMessage.id} className={s.message}>
-                        <div>{existingMessage.content}</div>
-                      </Card>
-                    ))
+                  ? chat.messagePage.messages
+                      .map(existingMessage => (
+                        <Card key={existingMessage.id} className={s.message}>
+                          <div>{existingMessage.content}</div>
+                        </Card>
+                      ))
+                      .reverse()
                   : null}
               </div>
               <div className={s.input}>

@@ -57,7 +57,7 @@ const chatPage: IFieldResolver<UserModel, IContext> = async (_parentUser, {after
     after,
     pageSize,
     results: allChats,
-    getCursor: item => item.id,
+    getCursor: item => `${item.id}`,
   });
   return {
     chats: pagedChats.map(pagedChat => ({
@@ -93,7 +93,7 @@ const messagePage: IFieldResolver<ChatModel, IContext> = async (parentChat, {aft
     after,
     pageSize,
     results: allMessages,
-    getCursor: item => item.id,
+    getCursor: item => `${item.id}`,
   });
   return {
     messages: pagedMessages.map(pagedMessage => ({

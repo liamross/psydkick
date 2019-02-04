@@ -13,7 +13,7 @@ export const GET_CHATS = gql`
   query AllChats($after: String) {
     me {
       id
-      chatPage(pageSize: 1, after: $after) {
+      chatPage(pageSize: 3, after: $after) {
         cursor
         hasMore
         chats {
@@ -36,11 +36,11 @@ export const GET_CHATS = gql`
 interface IHomeProps extends RouteComponentProps {}
 
 const Home: React.SFC<IHomeProps> = ({history}) => {
-  const mergeResults = (prev: AllChats, fetched: AllChats) => ({
+  const mergeResults = (prev: AllChats, fetched: AllChats): AllChats => ({
     ...fetched,
     me: {
       ...fetched.me!,
-      chats: {
+      chatPage: {
         ...fetched.me!.chatPage,
         chats: [...prev.me!.chatPage.chats, ...fetched.me!.chatPage.chats],
       },
