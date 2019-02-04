@@ -41,12 +41,12 @@ export default class UserAPI extends DataSource<IContext> {
   }
 
   public async currentUser(): Promise<User> {
-    logger('currentUser');
+    logger('sql.currentUser');
     return this.validateUser();
   }
 
   public async findUser({id, name}: {id?: string | number; name?: string}): Promise<User | null> {
-    logger('findUser', id, name);
+    logger('sql.findUser', id, name);
     if (!isId(id) && !name) throw new InputError('Must provide one of `id` or `name`');
     const userRepo = this.connection.getRepository(User);
 
@@ -59,7 +59,7 @@ export default class UserAPI extends DataSource<IContext> {
   }
 
   public async createUser({name}: {name: string}): Promise<User | null> {
-    logger('createUser', name);
+    logger('sql.createUser', name);
     const existingUser = await this.findUser({name});
     if (existingUser) return null; // Return null: user exists.
 
@@ -72,7 +72,7 @@ export default class UserAPI extends DataSource<IContext> {
 
   public async getAllChatsByUser(): Promise<IConvertedChat[]> {
     const {id: userId} = this.validateUser();
-    logger('getAllChatsByUser', userId);
+    logger('sql.getAllChatsByUser', userId);
     const chatRepo = this.connection.getRepository(Chat);
     const chats = await chatRepo.find({
       where: [{clientId: userId}, {therapistId: userId}],
@@ -87,7 +87,7 @@ export default class UserAPI extends DataSource<IContext> {
   }
 
   public async getChatById({id}: {id: number}): Promise<IConvertedChat | null> {
-    logger('getChatById', id);
+    logger('sql.getChatById', id);
     const {id: userId} = this.validateUser();
     const chatRepo = this.connection.getRepository(Chat);
     const chatOrUndefined = await chatRepo.findOne({
@@ -98,7 +98,7 @@ export default class UserAPI extends DataSource<IContext> {
   }
 
   public async getAllMessagesByChat({chatId}: {chatId: number}): Promise<IConvertedMessage[]> {
-    logger('getAllMessagesByChat', chatId);
+    logger('sql.getAllMessagesByChat', chatId);
     // If no chat exists for this user, return early.
     const chat = await this.getChatById({id: chatId});
     if (!chat) return [];
@@ -114,7 +114,7 @@ export default class UserAPI extends DataSource<IContext> {
   }
 
   public async getMessageById({chatId, id}: {chatId: number; id: number}): Promise<IConvertedMessage | null> {
-    logger('getMessageById', chatId, id);
+    logger('sql.getMessageById', chatId, id);
     // If no chat exists for this user, return early.
     const chat = await this.getChatById({id: chatId});
     if (!chat) return null;
@@ -134,7 +134,7 @@ export default class UserAPI extends DataSource<IContext> {
     recipientId?: number;
     content: string;
   }): Promise<IConvertedMessage> {
-    logger('sendMessage', chatId, recipientId, content);
+    logger('sql.sendMessage', chatId, recipientId, content);
     const {id: userId} = this.validateUser();
 
     if (!isId(chatId) && !isId(recipientId)) {
@@ -173,14 +173,15 @@ export default class UserAPI extends DataSource<IContext> {
 
   private validateUser(): User {
     const user = this.context.user;
-    logger('validateUser', user);
+    logger('sql.validateUser', user);
     if (!user) throw new ValidationError();
     return user;
   }
 
   private async convertChat(chat: Chat): Promise<IConvertedChat> {
-    logger('convertChat', chat);
+    logger('sql.convertChat', chat);
     // const client = await this.findUser({id: chat.clientId});
+    // TODO: Remove this mock once you are picking users.
     const client = await this.findUser({id: chat.therapistId});
     const therapist = await this.findUser({id: chat.therapistId});
     if (!client) throw new DatabaseError('Client does not exist.');
