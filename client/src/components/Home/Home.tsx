@@ -1,6 +1,6 @@
 import {Button, Card} from '@blueprintjs/core';
 import gql from 'graphql-tag';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Query} from 'react-apollo';
 import {RouteComponentProps} from 'react-router';
 import ChatTile from '../ChatTile/ChatTile';
@@ -41,6 +41,10 @@ export const GET_CHATS = gql`
 interface IHomeProps extends RouteComponentProps {}
 
 const Home: React.SFC<IHomeProps> = ({history}) => {
+  useEffect(() => {
+    document.title = 'Home - Psydkick';
+  }, []);
+
   const mergeResults = (prev: AllChats, fetched: AllChats): AllChats => ({
     ...fetched,
     me: {

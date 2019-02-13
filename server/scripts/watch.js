@@ -79,6 +79,6 @@ nodemon({script: 'build/index.js'})
     console.log('Watching server file changes ("rs" to restart)');
   })
   .on('quit', function() {
-    console.log('Shutting down server');
+    console.log('\nShutting down server...');
     process.exit();
   });
