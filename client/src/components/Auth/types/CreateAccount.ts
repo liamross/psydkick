@@ -14,4 +14,5 @@ export interface CreateAccount {
 
 export interface CreateAccountVariables {
   name: string;
+  password: string;
 }

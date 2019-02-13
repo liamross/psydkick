@@ -7,14 +7,14 @@ import ErrorState from '../ErrorState/ErrorState';
 import s from './Auth.module.scss';
 
 const LOGIN_ACCOUNT = gql`
-  mutation LoginAccount($name: String!) {
-    login(name: $name)
+  mutation LoginAccount($name: String!, $password: String!) {
+    login(name: $name, password: $password)
   }
 `;
 
 const CREATE_ACCOUNT = gql`
-  mutation CreateAccount($name: String!) {
-    createAccount(name: $name)
+  mutation CreateAccount($name: String!, $password: String!) {
+    createAccount(name: $name, password: $password)
   }
 `;
 
@@ -27,17 +27,27 @@ const Auth: React.SFC<IAuthProps> = ({redirect, history}) => {
   const isLogin = history.location.pathname === '/login';
 
   const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+
   const [invalid, setInvalid] = useState(false);
   useEffect(() => {
     setInvalid(false);
-  }, [username, isLogin]);
+  }, [username]);
+  useEffect(() => {
+    if (isLogin) setInvalid(false);
+  }, [password]);
+  useEffect(() => {
+    setInvalid(false);
+  }, [isLogin]);
 
   useEffect(() => {
     if (isLogin) document.title = 'Log in - Psydkick';
     if (!isLogin) document.title = 'Sign up - Psydkick';
   }, [isLogin]);
 
-  const helperText = isLogin ? 'User does not exist' : 'Username is taken';
+  const helperText = isLogin
+    ? 'Incorrect username or password'
+    : 'Username is taken';
   const route = isLogin ? '/signup' : '/login';
   const routeButton = isLogin
     ? 'Create a new account'
@@ -77,7 +87,7 @@ const Auth: React.SFC<IAuthProps> = ({redirect, history}) => {
                 <div className={s.container}>
                   <FormGroup
                     helperText={invalid ? helperText : undefined}
-                    intent={invalid ? Intent.DANGER : undefined}
+                    intent={invalid && isLogin ? Intent.DANGER : undefined}
                     label={'Username'}
                     labelFor={'auth-username'}
                     labelInfo={'*'}>
@@ -90,11 +100,23 @@ const Auth: React.SFC<IAuthProps> = ({redirect, history}) => {
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                         setUsername(e.target.value)
                       }
-                      onKeyPress={e => {
-                        if (e.which === 13) {
-                          login({variables: {name: username}});
-                        }
-                      }}
+                    />
+                  </FormGroup>
+                  <FormGroup
+                    intent={invalid ? Intent.DANGER : undefined}
+                    label={'Password'}
+                    labelFor={'auth-password'}
+                    labelInfo={'*'}>
+                    <InputGroup
+                      type="password"
+                      id={'auth-password'}
+                      placeholder={'Enter password'}
+                      intent={invalid ? Intent.DANGER : undefined}
+                      value={password}
+                      autoComplete="off" // Stop autocomplete from covering helper text.
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        setPassword(e.target.value)
+                      }
                     />
                   </FormGroup>
                   <div className={s.buttonFlex}>
@@ -102,8 +124,10 @@ const Auth: React.SFC<IAuthProps> = ({redirect, history}) => {
                       {routeButton}
                     </Button>
                     <Button
-                      disabled={loading || !username || invalid}
-                      onClick={() => login({variables: {name: username}})}>
+                      disabled={loading || !username || !password || invalid}
+                      onClick={() =>
+                        login({variables: {name: username, password}})
+                      }>
                       {actionButton}
                     </Button>
                   </div>

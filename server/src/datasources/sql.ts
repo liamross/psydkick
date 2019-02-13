@@ -5,6 +5,7 @@ import {Message} from '../models/message';
 import {User} from '../models/user';
 import {isId, logger} from '../utils';
 import {InputError, ValidationError, DatabaseError} from '../errors';
+import {checkPassword, hashPassword} from '../password';
 
 interface IContext {
   user: User | null;
@@ -51,7 +52,15 @@ export default class UserAPI extends DataSource<IContext> {
     return userRepo.find();
   }
 
-  public async findUser({id, name}: {id?: string | number; name?: string}): Promise<User | null> {
+  public async findUser({
+    id,
+    name,
+    password,
+  }: {
+    id?: string | number;
+    name?: string;
+    password?: string;
+  }): Promise<User | null> {
     logger('sql.findUser', id, name);
     if (!isId(id) && !name) throw new InputError('Must provide one of `id` or `name`');
     const userRepo = this.connection.getRepository(User);
@@ -61,10 +70,14 @@ export default class UserAPI extends DataSource<IContext> {
     if (isId(id)) findObject.id = id;
     if (name) findObject.name = name;
     const existingUser = await userRepo.findOne({where: findObject});
+    if (existingUser && password) {
+      if (await checkPassword(existingUser, password)) return existingUser;
+      return null;
+    }
     return existingUser || null; // Convert undefined to null.
   }
 
-  public async createUser({name}: {name: string}): Promise<User | null> {
+  public async createUser({name, password}: {name: string; password: string}): Promise<User | null> {
     logger('sql.createUser', name);
     const existingUser = await this.findUser({name});
     if (existingUser) return null; // Return null: user exists.
@@ -73,6 +86,7 @@ export default class UserAPI extends DataSource<IContext> {
     const userRepo = this.connection.getRepository(User);
     const newUser = new User();
     newUser.name = name;
+    newUser.passwordHash = await hashPassword(password);
     return userRepo.save(newUser);
   }
 

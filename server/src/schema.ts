@@ -28,11 +28,11 @@ export default gql`
     """
     Returns login token. If null is returned, user does not exist.
     """
-    login(name: String!): String
+    login(name: String!, password: String!): String
     """
     Returns login token. If null is returned, user already exists.
     """
-    createAccount(name: String!): String
+    createAccount(name: String!, password: String!): String
   }
 
   type UserInformation {

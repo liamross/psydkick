@@ -17,12 +17,23 @@ export interface AllChats_me_chatPage_chats_therapist {
   name: string;
 }
 
+export interface AllChats_me_chatPage_chats_messagePage_messages {
+  __typename: "Message";
+  content: string;
+}
+
+export interface AllChats_me_chatPage_chats_messagePage {
+  __typename: "MessageConnection";
+  messages: AllChats_me_chatPage_chats_messagePage_messages[];
+}
+
 export interface AllChats_me_chatPage_chats {
   __typename: "Chat";
   id: string;
   createdAt: string;
   client: AllChats_me_chatPage_chats_client;
   therapist: AllChats_me_chatPage_chats_therapist;
+  messagePage: AllChats_me_chatPage_chats_messagePage;
 }
 
 export interface AllChats_me_chatPage {

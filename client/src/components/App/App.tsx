@@ -36,7 +36,7 @@ const App: React.SFC<{}> = () => {
         return (
           <Switch>
             <Route<IAuthRouteProps>
-              path={['/login', '/signup']}
+              path="/(login|signup)"
               render={({location, history}) => {
                 const redirect = location.state && location.state.redirect;
                 if (!data!.isLoggedIn) {
@@ -46,7 +46,7 @@ const App: React.SFC<{}> = () => {
               }}
             />
             <Route
-              render={({history, location: {pathname}}) => {
+              render={({location: {pathname}}) => {
                 if (!data!.isLoggedIn) {
                   return (
                     <Redirect

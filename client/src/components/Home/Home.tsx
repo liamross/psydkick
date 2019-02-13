@@ -27,6 +27,11 @@ export const GET_CHATS = gql`
             id
             name
           }
+          messagePage(pageSize: 1) {
+            messages {
+              content
+            }
+          }
         }
       }
     }
@@ -73,6 +78,7 @@ const Home: React.SFC<IHomeProps> = ({history}) => {
                   key={chat.id}
                   chat={chat}
                   onClick={() => history.push(`/chat/${chat.id}`)}
+                  messages={chat.messagePage.messages}
                 />
               ))}
             {hasChats && data!.me!.chatPage.hasMore ? (

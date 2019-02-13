@@ -13,4 +13,7 @@ export class User {
 
   @Column()
   public name!: string;
+
+  @Column()
+  public passwordHash!: string;
 }

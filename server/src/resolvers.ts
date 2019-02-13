@@ -39,13 +39,13 @@ const sendMessage: IFieldResolver<{}, IContext> = async (_, {chatId, recipientId
   return sentMessage;
 };
 
-const login: IFieldResolver<{}, IContext> = async (_, {name}, {dataSources}) => {
-  const user = await dataSources.sqlAPI.findUser({name});
+const login: IFieldResolver<{}, IContext> = async (_, {name, password}, {dataSources}) => {
+  const user = await dataSources.sqlAPI.findUser({name, password});
   if (user) return Buffer.from(name).toString('base64');
 };
 
-const createAccount: IFieldResolver<{}, IContext> = async (_, {name}, {dataSources}) => {
-  const user = await dataSources.sqlAPI.createUser({name});
+const createAccount: IFieldResolver<{}, IContext> = async (_, {name, password}, {dataSources}) => {
+  const user = await dataSources.sqlAPI.createUser({name, password});
   if (user) return Buffer.from(name).toString('base64');
 };
 

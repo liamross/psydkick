@@ -14,4 +14,5 @@ export interface LoginAccount {
 
 export interface LoginAccountVariables {
   name: string;
+  password: string;
 }
