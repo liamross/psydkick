@@ -1,4 +1,5 @@
 import {Card} from '@blueprintjs/core';
+import classNames from 'classnames';
 import gql from 'graphql-tag';
 import React, {useState} from 'react';
 import {Mutation, Query} from 'react-apollo';
@@ -62,11 +63,11 @@ const SEND_MESSAGE = gql`
 interface IChatProps extends RouteComponentProps<{chatId?: string}, any, any> {}
 
 const Chat: React.SFC<IChatProps> = ({match, history}) => {
-  const [message, setMessage] = useState('');
-
   const chatId: string | undefined = match.params.chatId;
+
+  const [message, setMessage] = useState('');
   // TODO: Unmock and select recipient eventually.
-  const recipientId: string | undefined = chatId ? undefined : '0';
+  const [recipientId, setRecipientId] = useState(chatId ? undefined : '0');
 
   const renderMutation = (chat?: GetChatMessages_me_chat | null) => {
     return (
@@ -75,22 +76,20 @@ const Chat: React.SFC<IChatProps> = ({match, history}) => {
         refetchQueries={() => {
           // If chat exists, refetch get messages to populate message in chat.
           if (chatId) {
-            setMessage('');
             return [{query: GET_CHAT_MESSAGES, variables: {chatId}}];
           }
           // If new chat is being made, refetch get chats to populate home.
           return [{query: GET_CHATS}];
         }}
+        awaitRefetchQueries // Await sent message
         onCompleted={({sendMessage}) => {
+          setMessage('');
           if (!chatId) {
-            setMessage('');
             history.replace(`/chat/${sendMessage.chatId}`);
           }
         }}>
         {(sendMessage, {loading, error}) => {
-          // TODO:
-          // 1. loading: show sending message
-          // 2. error: show 'message not sent, retry?'
+          // TODO: on error - show 'message not sent, retry?'
 
           const handleSubmit = () => {
             sendMessage({variables: {chatId, recipientId, content: message}});
@@ -108,10 +107,16 @@ const Chat: React.SFC<IChatProps> = ({match, history}) => {
                       ))
                       .reverse()
                   : null}
+                {loading && message ? (
+                  <Card className={classNames(s.message, s.messagePlaceholder)}>
+                    <div>{message}</div>
+                  </Card>
+                ) : null}
               </div>
               <div className={s.input}>
                 <ChatInput
-                  value={message}
+                  disabled={loading}
+                  value={!loading ? message : ''}
                   onChange={setMessage}
                   onSubmit={handleSubmit}
                 />

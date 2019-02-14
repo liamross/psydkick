@@ -14,6 +14,7 @@ const ChatInput: React.SFC<IChatInputProps> = ({
   onChange,
   onSubmit,
   className,
+  disabled,
   ...editableTextProps
 }) => {
   const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
@@ -27,6 +28,7 @@ const ChatInput: React.SFC<IChatInputProps> = ({
       <div className={s.component} onKeyDown={handleKeyDown}>
         <EditableText
           {...editableTextProps}
+          disabled={disabled}
           className={classNames(s.input, className)}
           maxLines={4}
           minLines={1}
@@ -38,6 +40,7 @@ const ChatInput: React.SFC<IChatInputProps> = ({
           // onConfirm={onSubmit} // TODO: Need to just detect enter message
         />
         <Button
+          disabled={disabled}
           className={s.button}
           onClick={onSubmit}
           minimal
