@@ -7,24 +7,24 @@ import {isId, logger} from '../utils';
 import {InputError, ValidationError, DatabaseError} from '../errors';
 import {checkPassword, hashPassword} from '../password';
 
-interface IContext {
+interface Context {
   user: User | null;
 }
 
-interface IConvertedChat extends Chat {
+interface ConvertedChat extends Chat {
   client: User;
   therapist: User;
 }
 
-interface IConvertedMessage extends Message {
+interface ConvertedMessage extends Message {
   sender: User;
 }
 
-export default class UserAPI extends DataSource<IContext> {
+export default class UserAPI extends DataSource<Context> {
   private connection: Connection;
-  private context!: IContext;
+  private context!: Context;
 
-  constructor({connection}: {connection: Connection}) {
+  public constructor({connection}: {connection: Connection}) {
     super();
     this.connection = connection;
     // this.context = null;
@@ -37,7 +37,7 @@ export default class UserAPI extends DataSource<IContext> {
    * here, so we can know about the user making requests. Additionally, we will
    * assign this.cache to the request cache in order to access cached values.
    */
-  public initialize(config: DataSourceConfig<IContext>): void {
+  public initialize(config: DataSourceConfig<Context>): void {
     this.context = config.context;
   }
 
@@ -90,7 +90,7 @@ export default class UserAPI extends DataSource<IContext> {
     return userRepo.save(newUser);
   }
 
-  public async getAllChatsByUser(): Promise<IConvertedChat[]> {
+  public async getAllChatsByUser(): Promise<ConvertedChat[]> {
     const {id: userId} = this.validateUser();
     logger('sql.getAllChatsByUser', userId);
     const chatRepo = this.connection.getRepository(Chat);
@@ -106,7 +106,7 @@ export default class UserAPI extends DataSource<IContext> {
     return returnArray;
   }
 
-  public async getChatById({id}: {id: number}): Promise<IConvertedChat | null> {
+  public async getChatById({id}: {id: number}): Promise<ConvertedChat | null> {
     logger('sql.getChatById', id);
     const {id: userId} = this.validateUser();
     const chatRepo = this.connection.getRepository(Chat);
@@ -117,7 +117,7 @@ export default class UserAPI extends DataSource<IContext> {
     return null;
   }
 
-  public async getAllMessagesByChat({chatId}: {chatId: number}): Promise<IConvertedMessage[]> {
+  public async getAllMessagesByChat({chatId}: {chatId: number}): Promise<ConvertedMessage[]> {
     logger('sql.getAllMessagesByChat', chatId);
     // If no chat exists for this user, return early.
     const chat = await this.getChatById({id: chatId});
@@ -133,7 +133,7 @@ export default class UserAPI extends DataSource<IContext> {
     return returnArray;
   }
 
-  public async getMessageById({chatId, id}: {chatId: number; id: number}): Promise<IConvertedMessage | null> {
+  public async getMessageById({chatId, id}: {chatId: number; id: number}): Promise<ConvertedMessage | null> {
     logger('sql.getMessageById', chatId, id);
     // If no chat exists for this user, return early.
     const chat = await this.getChatById({id: chatId});
@@ -153,7 +153,7 @@ export default class UserAPI extends DataSource<IContext> {
     chatId?: number;
     recipientId?: number;
     content: string;
-  }): Promise<IConvertedMessage> {
+  }): Promise<ConvertedMessage> {
     logger('sql.sendMessage', chatId, recipientId, content);
     const {id: userId} = this.validateUser();
 
@@ -198,7 +198,7 @@ export default class UserAPI extends DataSource<IContext> {
     return user;
   }
 
-  private async convertChat(chat: Chat): Promise<IConvertedChat> {
+  private async convertChat(chat: Chat): Promise<ConvertedChat> {
     logger('sql.convertChat', chat);
     // const client = await this.findUser({id: chat.clientId});
     // TODO: Remove this mock once you are picking users.
@@ -209,7 +209,7 @@ export default class UserAPI extends DataSource<IContext> {
     return {...chat, client, therapist};
   }
 
-  private async convertMessage(message: Message): Promise<IConvertedMessage> {
+  private async convertMessage(message: Message): Promise<ConvertedMessage> {
     logger('convertMessage', message);
     const sender = await this.findUser({id: message.senderId});
     if (!sender) throw new DatabaseError('Sender does not exist.');

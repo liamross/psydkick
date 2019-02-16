@@ -1,7 +1,7 @@
 import {Card} from '@blueprintjs/core';
 import classNames from 'classnames';
 import gql from 'graphql-tag';
-import React, {useState} from 'react';
+import React, {useRef, useState, useEffect} from 'react';
 import {Mutation, Query} from 'react-apollo';
 import {RouteComponentProps} from 'react-router';
 import ChatInput from '../ChatInput/ChatInput';
@@ -63,11 +63,28 @@ const SEND_MESSAGE = gql`
 interface IChatProps extends RouteComponentProps<{chatId?: string}, any, any> {}
 
 const Chat: React.SFC<IChatProps> = ({match, history}) => {
+  const messagesRef = useRef<HTMLDivElement>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+
   const chatId: string | undefined = match.params.chatId;
 
   const [message, setMessage] = useState('');
   // TODO: Unmock and select recipient eventually.
   const [recipientId, setRecipientId] = useState(chatId ? undefined : '0');
+
+  const scrollToBottom = () => {
+    // TODO: Remove hack.
+    setTimeout(() => {
+      if (messagesRef.current && wrapperRef.current) {
+        // TODO: best way?
+        const top = wrapperRef.current.offsetHeight;
+        messagesRef.current.scroll({top});
+      }
+    });
+  };
+  useEffect(() => {
+    scrollToBottom();
+  }, []);
 
   const renderMutation = (chat?: GetChatMessages_me_chat | null) => {
     return (
@@ -91,27 +108,32 @@ const Chat: React.SFC<IChatProps> = ({match, history}) => {
         {(sendMessage, {loading, error}) => {
           // TODO: on error - show 'message not sent, retry?'
 
+          if (loading) scrollToBottom();
+
           const handleSubmit = () => {
             sendMessage({variables: {chatId, recipientId, content: message}});
           };
 
           return (
             <div className={s.component}>
-              <div className={s.messages}>
-                {chat
-                  ? chat.messagePage.messages
-                      .map(existingMessage => (
-                        <Card key={existingMessage.id} className={s.message}>
-                          <div>{existingMessage.content}</div>
-                        </Card>
-                      ))
-                      .reverse()
-                  : null}
-                {loading && message ? (
-                  <Card className={classNames(s.message, s.messagePlaceholder)}>
-                    <div>{message}</div>
-                  </Card>
-                ) : null}
+              <div className={s.messages} ref={messagesRef}>
+                <div className={s.messageWrapper} ref={wrapperRef}>
+                  {chat
+                    ? chat.messagePage.messages
+                        .map(existingMessage => (
+                          <Card key={existingMessage.id} className={s.message}>
+                            <div>{existingMessage.content}</div>
+                          </Card>
+                        ))
+                        .reverse()
+                    : null}
+                  {loading && message ? (
+                    <Card
+                      className={classNames(s.message, s.messagePlaceholder)}>
+                      <div>{message}</div>
+                    </Card>
+                  ) : null}
+                </div>
               </div>
               <div className={s.input}>
                 <ChatInput

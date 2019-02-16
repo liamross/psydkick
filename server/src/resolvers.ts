@@ -8,7 +8,7 @@ import {paginateResults} from './utils';
 // All resolvers get these arguments:
 // fieldName: (parent, args, context, info) => data
 
-interface IContext {
+interface Context {
   dataSources: {sqlAPI: UserAPI};
 }
 
@@ -16,46 +16,46 @@ interface IContext {
 // QUERY RESOLVER
 // -----------------------------------------------------------------------------
 
-const me: IFieldResolver<{}, IContext> = async (_, __, {dataSources}) => {
+const me: IFieldResolver<{}, Context> = async (_, __, {dataSources}) => {
   return dataSources.sqlAPI.currentUser();
 };
 
-const userInfo: IFieldResolver<{}, IContext> = async (_, {id, name}, {dataSources}) => {
+const userInfo: IFieldResolver<{}, Context> = async (_, {id, name}, {dataSources}) => {
   return dataSources.sqlAPI.findUser({id, name});
 };
 
-const users: IFieldResolver<{}, IContext> = async (_, __, {dataSources}) => {
+const users: IFieldResolver<{}, Context> = async (_, __, {dataSources}) => {
   return dataSources.sqlAPI.allUsers();
 };
 
-const Query: IResolverObject<{}, IContext> = {me, userInfo, users};
+const Query: IResolverObject<{}, Context> = {me, userInfo, users};
 
 // =============================================================================
 // MUTATION RESOLVER
 // -----------------------------------------------------------------------------
 
-const sendMessage: IFieldResolver<{}, IContext> = async (_, {chatId, recipientId, content}, {dataSources}) => {
+const sendMessage: IFieldResolver<{}, Context> = async (_, {chatId, recipientId, content}, {dataSources}) => {
   const sentMessage = await dataSources.sqlAPI.sendMessage({chatId, recipientId, content});
   return sentMessage;
 };
 
-const login: IFieldResolver<{}, IContext> = async (_, {name, password}, {dataSources}) => {
+const login: IFieldResolver<{}, Context> = async (_, {name, password}, {dataSources}) => {
   const user = await dataSources.sqlAPI.findUser({name, password});
   if (user) return Buffer.from(name).toString('base64');
 };
 
-const createAccount: IFieldResolver<{}, IContext> = async (_, {name, password}, {dataSources}) => {
+const createAccount: IFieldResolver<{}, Context> = async (_, {name, password}, {dataSources}) => {
   const user = await dataSources.sqlAPI.createUser({name, password});
   if (user) return Buffer.from(name).toString('base64');
 };
 
-const Mutation: IResolverObject<{}, IContext> = {sendMessage, login, createAccount};
+const Mutation: IResolverObject<{}, Context> = {sendMessage, login, createAccount};
 
 // =============================================================================
 // USER RESOLVER
 // -----------------------------------------------------------------------------
 
-const chatPage: IFieldResolver<UserModel, IContext> = async (_parentUser, {after, pageSize}, {dataSources}) => {
+const chatPage: IFieldResolver<UserModel, Context> = async (_parentUser, {after, pageSize}, {dataSources}) => {
   const allChats = await dataSources.sqlAPI.getAllChatsByUser();
   const pagedChats = paginateResults<ChatModel>({
     after,
@@ -74,7 +74,7 @@ const chatPage: IFieldResolver<UserModel, IContext> = async (_parentUser, {after
   };
 };
 
-const chat: IFieldResolver<UserModel, IContext> = async (_parentUser, {id}, {dataSources}) => {
+const chat: IFieldResolver<UserModel, Context> = async (_parentUser, {id}, {dataSources}) => {
   const chatOrNull = await dataSources.sqlAPI.getChatById({id});
   return (
     chatOrNull && {
@@ -85,13 +85,13 @@ const chat: IFieldResolver<UserModel, IContext> = async (_parentUser, {id}, {dat
   );
 };
 
-const User: IResolverObject<UserModel, IContext> = {chatPage, chat};
+const User: IResolverObject<UserModel, Context> = {chatPage, chat};
 
 // =============================================================================
 // CHAT RESOLVER
 // -----------------------------------------------------------------------------
 
-const messagePage: IFieldResolver<ChatModel, IContext> = async (parentChat, {after, pageSize}, {dataSources}) => {
+const messagePage: IFieldResolver<ChatModel, Context> = async (parentChat, {after, pageSize}, {dataSources}) => {
   const allMessages = await dataSources.sqlAPI.getAllMessagesByChat({chatId: parentChat.id});
   const pagedMessages = paginateResults<MessageModel>({
     after,
@@ -112,7 +112,7 @@ const messagePage: IFieldResolver<ChatModel, IContext> = async (parentChat, {aft
   };
 };
 
-const message: IFieldResolver<ChatModel, IContext> = async (parentChat, {id}, {dataSources}) => {
+const message: IFieldResolver<ChatModel, Context> = async (parentChat, {id}, {dataSources}) => {
   const messageOrNull = await dataSources.sqlAPI.getMessageById({chatId: parentChat.id, id});
   return (
     messageOrNull && {
@@ -123,12 +123,12 @@ const message: IFieldResolver<ChatModel, IContext> = async (parentChat, {id}, {d
   );
 };
 
-const Chat: IResolverObject<ChatModel, IContext> = {messagePage, message};
+const Chat: IResolverObject<ChatModel, Context> = {messagePage, message};
 
 // =============================================================================
 // Bundle into resolvers object.
 // -----------------------------------------------------------------------------
 
-const resolvers: IResolvers<any, IContext> = {Query, Mutation, User, Chat};
+const resolvers: IResolvers<any, Context> = {Query, Mutation, User, Chat};
 
 export default resolvers;

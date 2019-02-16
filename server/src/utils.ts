@@ -8,10 +8,10 @@ export const connectDatabase = async (): Promise<Connection> => {
   const connectionOptions: ConnectionOptions = {
     type: 'sqlite',
     database: './store.sqlite',
-    host: 'localhost',
-    port: 3306,
-    username: 'username', // TODO: update
-    password: 'password', // TODO: update
+    // host: 'localhost',
+    // port: 3306,
+    // username: 'username', // TODO: update
+    // password: 'password', // TODO: update
     entities: [User, Chat, Message],
     synchronize: true,
     logging: false,
@@ -19,24 +19,24 @@ export const connectDatabase = async (): Promise<Connection> => {
   return await createConnection(connectionOptions);
 };
 
-interface IItem {
+interface Item {
   cursor?: string;
   [key: string]: any;
 }
 
-interface IPaginateResultsInput<T extends IItem> {
+interface PaginateResultsInput<T extends Item> {
   after: string;
   pageSize: number;
   results: T[];
-  getCursor?: (item: IItem) => string;
+  getCursor?: (item: Item) => string;
 }
 
-export const paginateResults = <T extends IItem>({
+export const paginateResults = <T extends Item>({
   after: cursor,
   pageSize = 20,
   results,
   getCursor,
-}: IPaginateResultsInput<T>): T[] => {
+}: PaginateResultsInput<T>): T[] => {
   if (pageSize < 1) return [];
   if (!cursor) return results.slice(0, pageSize);
 
