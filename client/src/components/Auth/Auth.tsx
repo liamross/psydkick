@@ -18,12 +18,12 @@ const CREATE_ACCOUNT = gql`
   }
 `;
 
-interface IAuthProps {
+interface AuthProps {
   redirect?: string;
   history: History<any>;
 }
 
-const Auth: React.SFC<IAuthProps> = ({redirect, history}) => {
+const Auth: React.SFC<AuthProps> = ({redirect, history}) => {
   const isLogin = history.location.pathname === '/login';
 
   const [username, setUsername] = useState('');

@@ -20,7 +20,7 @@ const IS_LOGGED_IN = gql`
   }
 `;
 
-interface IAuthRouteProps extends RouteProps {
+interface AuthRouteProps extends RouteProps {
   render?: (
     props: RouteComponentProps<any, any, {redirect?: string} | undefined>,
   ) => React.ReactNode;
@@ -35,7 +35,7 @@ const App: React.SFC<{}> = () => {
 
         return (
           <Switch>
-            <Route<IAuthRouteProps>
+            <Route<AuthRouteProps>
               path="/(login|signup)"
               render={({location, history}) => {
                 const redirect = location.state && location.state.redirect;

@@ -5,7 +5,7 @@ import {ApolloConsumer} from 'react-apollo';
 import {DatabaseError, InputError, ValidationError} from './errorParams';
 import s from './ErrorState.module.scss';
 
-interface IErrorStateProps {
+interface ErrorStateProps {
   error: ApolloError;
   /**
    * Only shown if the error is not a validaiton error.
@@ -13,7 +13,7 @@ interface IErrorStateProps {
   actionButton?: {buttonText: string; onClick: () => any};
 }
 
-const ErrorState: React.SFC<IErrorStateProps> = ({error, actionButton}) => {
+const ErrorState: React.SFC<ErrorStateProps> = ({error, actionButton}) => {
   console.error(error);
   return (
     <ApolloConsumer>

@@ -7,13 +7,13 @@ import {
 } from '../Home/types/AllChats';
 import s from './ChatTile.module.scss';
 
-interface IChatTileProps {
+interface ChatTileProps {
   chat: AllChats_me_chatPage_chats;
   onClick: () => any;
   messages: AllChats_me_chatPage_chats_messagePage_messages[];
 }
 
-const ChatTile: React.SFC<IChatTileProps> = ({chat, onClick, messages}) => {
+const ChatTile: React.SFC<ChatTileProps> = ({chat, onClick, messages}) => {
   return (
     <Card interactive onClick={onClick} className={s.component}>
       <div>Client: {chat.client.name}</div>

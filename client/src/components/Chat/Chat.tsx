@@ -60,9 +60,9 @@ const SEND_MESSAGE = gql`
   }
 `;
 
-interface IChatProps extends RouteComponentProps<{chatId?: string}, any, any> {}
+interface ChatProps extends RouteComponentProps<{chatId?: string}, any, any> {}
 
-const Chat: React.SFC<IChatProps> = ({match, history}) => {
+const Chat: React.SFC<ChatProps> = ({match, history}) => {
   const messagesRef = useRef<HTMLDivElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
 

@@ -4,11 +4,11 @@ import {Route, Switch} from 'react-router';
 import Chat from '../Chat/Chat';
 import Home from '../Home/Home';
 
-interface IAuthCheckProps {
+interface AuthCheckProps {
   client: ApolloClient<any>;
 }
 
-const AuthCheck: React.SFC<IAuthCheckProps> = ({client}) => {
+const AuthCheck: React.SFC<AuthCheckProps> = ({client}) => {
   const token = localStorage.getItem('token');
   if (!token) client.writeData({data: {isLoggedIn: false}});
 

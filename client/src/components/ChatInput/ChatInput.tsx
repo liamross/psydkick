@@ -3,13 +3,13 @@ import classNames from 'classnames';
 import React from 'react';
 import s from './ChatInput.module.scss';
 
-interface IChatInputProps extends IEditableTextProps {
+interface ChatInputProps extends IEditableTextProps {
   value: string;
   onChange: (newValue: string) => any;
   onSubmit: () => any;
 }
 
-const ChatInput: React.SFC<IChatInputProps> = ({
+const ChatInput: React.SFC<ChatInputProps> = ({
   value,
   onChange,
   onSubmit,

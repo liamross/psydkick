@@ -38,9 +38,9 @@ export const GET_CHATS = gql`
   }
 `;
 
-interface IHomeProps extends RouteComponentProps {}
+interface HomeProps extends RouteComponentProps {}
 
-const Home: React.SFC<IHomeProps> = ({history}) => {
+const Home: React.SFC<HomeProps> = ({history}) => {
   useEffect(() => {
     document.title = 'Home - Psydkick';
   }, []);
