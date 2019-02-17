@@ -3,7 +3,7 @@ import {Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColu
 @Entity()
 export class Message {
   @PrimaryGeneratedColumn('increment')
-  public id!: number;
+  public id!: string;
 
   @CreateDateColumn({type: 'datetime'})
   public createdAt!: Date;
@@ -15,8 +15,8 @@ export class Message {
   public content!: string;
 
   @Column()
-  public senderId!: number;
+  public senderId!: string;
 
   @Column()
-  public chatId!: number;
+  public chatId!: string;
 }
