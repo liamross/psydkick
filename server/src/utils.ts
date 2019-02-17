@@ -60,9 +60,18 @@ export const paginateResults = <T extends Item>({
 };
 
 export const logger = (...args: any[]) => {
+  const newArgs = args.map(arg => {
+    if (arg !== null && typeof arg === 'object' && 'passwordHash' in arg) {
+      return {
+        ...arg,
+        passwordHash: 'CENSORED',
+      };
+    }
+    return arg;
+  });
   const date = moment();
   const formattedDate = `[${date.format('DD/MM/YYYY-HH:mm:ss.SSS')}]`;
-  return console.log(formattedDate, ...args);
+  return console.log(formattedDate, ...newArgs);
 };
 
 export const isId = (id: any): boolean => {
